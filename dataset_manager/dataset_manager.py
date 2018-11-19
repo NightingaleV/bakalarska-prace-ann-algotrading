@@ -73,3 +73,21 @@ class DatasetManager(TechnicalIndicators):
         cols = cols[-positions:] + cols[:-positions]
         self.df = self.df[cols]
         return self.df
+
+    def test_train_split(self, model):
+        self.calc_set_size(model=model)
+        df = self.df.copy()
+        df_train, df_test = df[0:model.train_rows].copy(), df[model.train_rows - model.n_past:len(
+            df)].copy()
+        df_test_close_price = df_test['close']
+        df_train.drop(['close'], axis=1, inplace=True)
+        df_test.drop(['close'], axis=1, inplace=True)
+        df_train.reset_index(drop=True, inplace=True)
+        df_test.reset_index(drop=True, inplace=True)
+        df_test_close_price.reset_index(drop=True, inplace=True)
+        return df_train, df_test, df_test_close_price
+
+    def calc_set_size(self, model):
+        model.train_rows = int((1 - model.test_size) * len(self.df))
+        model.test_rows = int(model.test_size * len(self.df))
+        model.validation_rows = int((1 - model.test_size) * model.val_size * len(self.df))
