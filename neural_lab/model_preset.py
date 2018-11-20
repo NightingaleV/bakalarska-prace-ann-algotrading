@@ -152,22 +152,21 @@ class ModelBuilder:
     # MODEL BUILDING TASKS
     # ------------------------------------------------------------------------------
     # Add Dropout layer inside model
-    def add_dropout(self, model):
+    def add_dropout(self):
         if self.do_dropout:
-            model.add(Dropout(self.dropout_rate))
-            return model
+            self.compiled_model.add(Dropout(self.dropout_rate))
+            return self.compiled_model
 
     # Batch Normalization - Apply Z-score on inputs inside NN
-    def add_batch_norm(self, model):
+    def add_batch_norm(self):
         if self.do_batch_norm:
-            model.add(BatchNormalization())
-            return model
+            self.compiled_model.add(BatchNormalization())
+            return self.compiled_model
 
     # Add layer for flattening the dimension of input
-    @staticmethod
-    def add_flat(model):
-        model.add(Flatten())
-        return model
+    def add_flat(self):
+        self.compiled_model.add(Flatten())
+        return self.compiled_model
 
     # VISUALIZE TRAINING
     # ------------------------------------------------------------------------------

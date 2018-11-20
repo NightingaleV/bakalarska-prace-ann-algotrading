@@ -1,3 +1,9 @@
+# KERAS
+from keras import metrics
+from keras.models import Sequential
+from keras.layers import Dense, Activation, Dropout
+from keras import regularizers
+# CUSTOM
 from neural_lab.model_preset import ModelPreset
 
 
@@ -41,3 +47,35 @@ class NeuralNetworkModel(ModelPreset):
         # SCORING
         self.monitor_metric: str = 'acc'
         self.val_monitor_metric: str = 'val_' + self.monitor_metric
+
+    def build_network(self):
+        self.compiled_model = Sequential()
+
+        # 1. HIDDEN LAYER
+        self.compiled_model.add(Dense(units=self.neurons_hidden,
+                                      kernel_initializer='uniform',
+                                      input_shape=(self.shape[1], self.shape[2])))
+        # Batch Normalization
+        self.add_batch_norm()
+        # Activation Function
+        self.compiled_model.add(Activation(self.activation_func))
+        # Dropout
+        self.add_dropout()
+
+        # 2. HIDDEN LAYER
+        self.compiled_model.add(Dense(units=self.neurons_hidden,
+                                      kernel_initializer='uniform',
+                                      activity_regularizer=regularizers.l2(0.01)))
+        # Batch Normalization
+        self.add_batch_norm()
+        # Activation Function
+        self.compiled_model.add(Activation(self.activation_func))
+        # Dropout
+        self.add_dropout()
+
+        # OUTPUT LAYER
+        self.add_flat()
+        self.compiled_model.add(Dense(units=self.neurons_output, activation=self.output_func,
+                                      kernel_initializer='uniform'))
+        # COMPILE MODEL
+        super(NeuralNetworkModel, self).build_network()
