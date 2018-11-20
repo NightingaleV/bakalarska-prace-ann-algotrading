@@ -6,7 +6,7 @@ class ModelEvaluation:
 
     def __init__(self):
         # Accuracy
-        self.test_acc = 0
+        self.test_score = 0
 
         # RootMeanSquaredError
         self.rmse_train = 0

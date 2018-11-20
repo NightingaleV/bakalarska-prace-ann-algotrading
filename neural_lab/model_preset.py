@@ -1,4 +1,5 @@
 # Imports
+import os
 import numpy as np
 # Visualization
 import matplotlib.pyplot as plt
@@ -14,7 +15,7 @@ from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, T
 
 class ModelBuilder:
 
-    model_folder = 'trained_models'
+    models_folder = 'trained_models'
 
     def __init__(self):
 
@@ -25,7 +26,7 @@ class ModelBuilder:
 
         # GENERAL
         self.model_name: str = 'model_ann'
-        self.val_split: float = 0.5
+        self.val_size: float = 0.5
 
         # PROPERTIES
         self.epochs: int = 100
@@ -70,7 +71,7 @@ class ModelBuilder:
     def load_network(self):
         self.trained_model = self.build_network()
         self.trained_model.load_weights(
-            filepath=f'{self.model_folder}/{self.model_name}/{self.model_name}.hdf5',
+            filepath=f'{self.models_folder}/{self.model_name}/{self.model_name}.hdf5',
             by_name=False)
         return self.trained_model
 
@@ -97,7 +98,7 @@ class ModelBuilder:
                                                  min_lr=0.000001, verbose=verbose)
         # Save Best Model
         self_checkpoint = ModelCheckpoint(
-            filepath=f'{self.model_folder}/{self.model_name}/{self.model_name}.hdf5',
+            filepath=f'{self.models_folder}/{self.model_name}/{self.model_name}.hdf5',
             monitor=self.val_monitor_metric,
             verbose=1, save_best_only=True)
 
@@ -112,7 +113,7 @@ class ModelBuilder:
                                                        callbacks=[stop_training,
                                                                   reduce_learning_rate,
                                                                   self_checkpoint],
-                                                       validation_split=self.val_split,
+                                                       validation_split=self.val_size,
                                                        verbose=verbose,
                                                        batch_size=self.batch_size)
 
@@ -178,7 +179,7 @@ class ModelBuilder:
         plt.ylabel('Error')
         plt.xlabel('Epoch')
         plt.legend(['train', 'validation'], loc='upper right')
-        plt.savefig(f'{self.model_folder}/{self.model_name}/{self.model_name}_error.png',
+        plt.savefig(f'{self.models_folder}/{self.model_name}/{self.model_name}_error.png',
                     bbox_inches='tight', dpi=150)
         return plt.show()
 
@@ -190,10 +191,17 @@ class ModelBuilder:
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
         plt.legend(['train', 'validation'], loc='lower right')
-        plt.savefig(f'{self.model_folder}/{self.model_name}/{self.model_name}_accuracy.png',
+        plt.savefig(f'{self.models_folder}/{self.model_name}/{self.model_name}_accuracy.png',
                     bbox_inches='tight', dpi=150)
         return plt.show()
 
+    # OTHER
+    # ------------------------------------------------------------------------------
+    @classmethod
+    def create_folder(cls, name):
+        # Dir to save results
+        if not os.path.exists(f'{cls.models_folder}/{name}'):
+            os.makedirs(f'{cls.models_folder}/{name}')
 
 class ModelPreset:
     pass
