@@ -11,6 +11,9 @@ from keras.layers import Dense, Dropout
 from keras.layers import BatchNormalization, Flatten
 from keras.layers.advanced_activations import LeakyReLU, ELU
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
+# Custom
+from .model_strategies import ModelStrategies
+from .model_evaluation import ModelEvaluation
 
 
 class ModelBuilder:
@@ -203,5 +206,10 @@ class ModelBuilder:
         if not os.path.exists(f'{cls.models_folder}/{name}'):
             os.makedirs(f'{cls.models_folder}/{name}')
 
-class ModelPreset:
-    pass
+
+class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
+
+    def __init__(self):
+        ModelBuilder.__init__(self)
+        ModelEvaluation.__init__(self)
+        ModelStrategies.__init__(self)
