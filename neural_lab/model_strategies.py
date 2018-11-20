@@ -52,3 +52,39 @@ class ModelStrategies:
         self.macd_strategy_max_drawdown = strategy['max_drawdown']
         self.macd_strategy_win_pct = strategy['winrate']
 
+    def set_pip_size(self):
+        if self.dataset == 'USD/JPY':
+            self.pip = 0.01
+        else:
+            self.pip = 0.0001
+
+    # Calculate return in pip for dataset - Needed close/long/short
+    def calc_pips_return(self, dataset):
+        pip = self.pip
+
+        # Fees for every trade executed
+        dataset['trans_cost'] = np.where(
+            (((dataset['long'] == True) & (dataset['long'].shift(1) == False)) |
+             ((dataset['short'] == True) & (dataset['short'].shift(1) == False))), self.spread,
+            0)
+
+        # Calculate change in pips
+        dataset['pips'] = (dataset['close'] - dataset['close'].shift(1)) * (1 / pip)
+
+        # Calculating returns
+        dataset['pip_ret'] = (((dataset['pips'] - dataset['trans_cost']) * dataset['long']) + (
+                (-(dataset['pips'] + dataset['trans_cost'])) * dataset['short']))
+
+        # Total Cumulative Return
+        dataset['cum_pip_ret'] = (dataset['pip_ret']).cumsum()
+        cum_pip_return = self.get_cumulative_pip_return(dataset)
+
+        # Total Fees
+        dataset['fees'] = dataset['trans_cost'].cumsum()
+        cum_pip_fees = dataset.iloc[-1][-1]
+
+        return cum_pip_return, cum_pip_fees
+
+    @staticmethod
+    def get_cumulative_pip_return(dataset):
+        return round(dataset['cum_pip_ret'].iloc[-1], 2)
