@@ -105,6 +105,49 @@ class ModelStrategies:
                         'n_trades': n_trades}
         return strategy
 
+    # Prediction + MACD Strategy
+    def macd_strategy(self, df, origin=0, threshold=0, calc_drawdown=True, form='list'):
+        pred_treshold = round(threshold, 6)
+
+        # TODO Refactor MACD into indicator or strategy
+        df['EMA26'] = df['close'].ewm(span=26).mean()
+        df['EMA12'] = df['close'].ewm(span=12).mean()
+        df['MACD'] = (df['EMA12'] - df['EMA26'])
+        df['signal_line'] = df['MACD'].ewm(span=9).mean()
+        # Set Positions
+        df['long'] = np.where((df['MACD'].shift(1) > df['signal_line'].shift(1)) &
+                              (df['prediction'] > origin + pred_treshold), 1, 0)
+        df['short'] = np.where((df['MACD'].shift(1) < df['signal_line'].shift(1)) &
+                               (df['prediction'] < origin - pred_treshold), 1, 0)
+        # Calc Returns
+        cum_pip_ret, cum_pip_fees = self.calc_pips_return(df)
+        # Sharpe
+        sharpe = self.calc_sharpe_ratio(df, 'pip_ret')
+        # Drawdown
+        max_drawdown = 0
+        if calc_drawdown:
+            max_drawdown, max_drawdown_pct, duration = self.calc_drawdown(df, 'cum_pip_ret')
+        # Number of Trades
+        n_trades = cum_pip_fees / self.SPREAD
+        # Winrate
+        winrate = self.calc_win_rate(df, 'cum_pip_ret')
+
+        # Return List or Dictionary
+        strategy = None
+        if form == 'list':
+            strategy = [pred_treshold, cum_pip_ret, sharpe, winrate, max_drawdown, cum_pip_fees,
+                        n_trades]
+
+        elif form == 'dict':
+            strategy = {'threshold': pred_treshold,
+                        'pip_profit': cum_pip_ret,
+                        'sharpe': sharpe,
+                        'winrate': winrate,
+                        'max_drawdown': max_drawdown,
+                        'pip_fees': cum_pip_fees,
+                        'n_trades': n_trades}
+        return strategy
+
     # STRATEGY CALCULATION METHODS
     # ------------------------------------------------------------------------------
     @staticmethod
