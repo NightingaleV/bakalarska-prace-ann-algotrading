@@ -3,11 +3,11 @@ from typing import Dict
 
 
 class ModelStrategies:
-    spread = 1.5
+    SPREAD = 1.5
 
     def __init__(self):
-        self.pip = None
-
+        self.pip: float = 0.
+        self.set_pip_size()
         # PREDICTION STRATEGY
         # Optimized Treshold
         self.nn_pred_strategy_best_threshold = 0
@@ -65,7 +65,7 @@ class ModelStrategies:
         # Fees for every trade executed
         dataset['trans_cost'] = np.where(
             (((dataset['long'] == True) & (dataset['long'].shift(1) == False)) |
-             ((dataset['short'] == True) & (dataset['short'].shift(1) == False))), self.spread,
+             ((dataset['short'] == True) & (dataset['short'].shift(1) == False))), self.SPREAD,
             0)
 
         # Calculate change in pips
