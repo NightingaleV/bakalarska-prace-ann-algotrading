@@ -62,4 +62,71 @@ class ModelBuilder:
         self.val_score: float = 0.
         self.val_score_max_in_epoch: int = 0
 
+    # MODEL WORKFLOW
+    # ------------------------------------------------------------------------------
+    def build_network(self, model):
+        model.compile(optimizer=eval(self.optimizer + f'(lr={self.starting_learn_rate})'),
+                      loss=self.loss_func,
+                      metrics=[self.monitor_metric])
+
+        return model
+
+    # Compile model + load saved weights
+    def load_network(self):
+        self.trained_model = self.build_network()
+        self.trained_model.load_weights(
+            filepath='trained_models/{}/{}.hdf5'.format(self.model_name, self.model_name),
+            by_name=False)
+        return self.trained_model
+
+    # Compile model + retrain model
+    def train_network(self, X_train, y_train):
+        self.trained_model = self.build_network()
+        # Callbacks
+        stop_training = EarlyStopping(monitor=self.val_monitor_metric, min_delta=1e-10,
+                                      patience=self.stop_training_patience,
+                                      verbose=1)
+        reduce_learning_rate = ReduceLROnPlateau(monitor=self.val_monitor_metric,
+                                                 factor=self.learning_rate_reduction,
+                                                 patience=self.learning_rate_patience,
+                                                 min_lr=0.000001, verbose=1)
+        self_checkpoint = ModelCheckpoint(
+            filepath='trained_models/{}/{}.hdf5'.format(self.model_name, self.model_name),
+            monitor=self.val_monitor_metric,
+            verbose=1, save_best_only=True)
+        # tensor_board = TensorBoard(log_dir='{}'.format(self), write_graph=True, write_images=True)
+        self.history = self.trained_model.fit(X_train, y_train, shuffle=self.shuffle_inputs,
+                                              epochs=self.epochs,
+                                              callbacks=[stop_training, reduce_learning_rate,
+                                                         self_checkpoint],
+                                              validation_split=self.val_split, verbose=1,
+                                              batch_size=self.batch_size)
+
+        # Set Score Metrics
+        self.set_score_values()
+
+        # Round Score Metrics
+        self.round_score_values()
+
+        return self.trained_model, self.history
+
+    def set_score_values(self):
+        # Set Value of best val metric
+        self.val_score = np.max(self.history.history[self.val_monitor_metric], axis=0)
+        # Set Index of best val metric
+        self.val_score_max_in_epoch = np.argmax(self.history.history[self.val_monitor_metric],
+                                                axis=0)
+        # Set Value of best val metric
+        self.train_score = self.history.history[self.monitor_metric][self.val_score_max_in_epoch]
+
+    def round_score_values(self):
+        if self.monitor_metric is 'acc':
+            # For Classification
+            self.train_score = (self.train_score * 100).round(2)
+            self.val_score = (self.val_score * 100).round(2)
+        else:
+            # For Regression
+            self.train_score = self.train_score.round(6)
+            self.val_score = self.val_score.round(6)
+
     
