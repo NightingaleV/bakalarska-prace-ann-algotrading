@@ -36,6 +36,16 @@ class ModelStrategies:
         # on Validation Set
         self.macd_strategy_val_pip_return = 0
 
+    # Set Threshold of Best NN Pred Strategy
+    def set_pred_best_threshold(self, dataset):
+        best_row = dataset['pip_profit'].idxmax()
+        self.nn_pred_strategy_best_threshold = dataset['threshold'].iloc[best_row]
+
+    # Set Threshold of Best NN Pred Strategy
+    def set_macd_best_threshold(self, dataset):
+        best_row = dataset['pip_profit'].idxmax()
+        self.macd_strategy_best_threshold = dataset['threshold'].iloc[best_row]
+
     # Set parameters from dictionary
     def set_nn_pred_strategy_parameters(self, strategy: Dict):
         self.nn_pred_strategy_pip_return = strategy['pip_profit']
