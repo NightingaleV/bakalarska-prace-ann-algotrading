@@ -1,5 +1,6 @@
-import numpy as np
 from typing import Dict
+import numpy as np
+import pandas as pd
 
 
 class ModelStrategies:
@@ -152,6 +153,28 @@ class ModelStrategies:
             sharpe = strategy_mean / strategy_risk
             sharpe = round(sharpe, 4)
         return sharpe
+
+    @staticmethod
+    def calc_drawdown(dataset, cumulative_returns):
+        # Calculate the cumulative returns curve
+        # and set up the High Water Mark
+        # Then create the drawdown and duration series
+        hwm = [0]
+        eq_idx = dataset[cumulative_returns].index
+        drawdown = pd.Series(index=eq_idx)
+        drawdown_perc = pd.Series(index=eq_idx)
+        duration = pd.Series(index=eq_idx)
+
+        # Loop over the index range
+        for t in range(1, len(eq_idx)):
+            cur_hwm = max(hwm[t - 1], dataset[cumulative_returns][t])
+            hwm.append(cur_hwm)
+            drawdown[t] = hwm[t] - dataset[cumulative_returns][t]
+            drawdown_perc[t] = 0 if hwm[t] == 0 else drawdown[t] / hwm[t]
+            duration[t] = 0 if drawdown[t] == 0 else duration[t - 1] + 1
+        max_drawdown = drawdown.max().round(1)
+        max_drawdown_pct = (drawdown_perc.max() * 100).round(1)
+        return max_drawdown, max_drawdown_pct, duration.max()
 
     @staticmethod
     def get_cumulative_pip_return(dataset):
