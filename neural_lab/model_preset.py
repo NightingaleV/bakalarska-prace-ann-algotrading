@@ -129,4 +129,22 @@ class ModelBuilder:
             self.train_score = self.train_score.round(6)
             self.val_score = self.val_score.round(6)
 
-    
+    # MODEL BUILDING TASKS
+    # ------------------------------------------------------------------------------
+    # Add Dropout layer inside model
+    def add_dropout(self, model):
+        if self.do_dropout:
+            model.add(Dropout(self.dropout_rate))
+            return model
+
+    # Batch Normalization - Apply Z-score on inputs inside NN
+    def add_batch_norm(self, model):
+        if self.do_batch_norm:
+            model.add(BatchNormalization())
+            return model
+
+    # Add layer for flattening the dimension of input
+    @staticmethod
+    def add_flat(model):
+        model.add(Flatten())
+        return model
