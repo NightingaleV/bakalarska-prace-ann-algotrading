@@ -167,7 +167,7 @@ class ModelBuilder:
 
     # VISUALIZE TRAINING
     # ------------------------------------------------------------------------------
-    def training_loss_plot(self):
+    def plot_training_loss(self):
         sns.set()
         plt.plot(self.training_history.history['loss'])
         plt.plot(self.training_history.history['val_loss'])
@@ -179,6 +179,18 @@ class ModelBuilder:
         plt.xlabel('Epoch')
         plt.legend(['train', 'validation'], loc='upper right')
         plt.savefig(f'{self.model_folder}/{self.model_name}/{self.model_name}_error.png',
+                    bbox_inches='tight', dpi=150)
+        return plt.show()
+
+    def plot_training_accuracy(self):
+        sns.set()
+        plt.plot(self.training_history.history['acc'])
+        plt.plot(self.training_history.history['val_acc'])
+        plt.title('Model Training Accuracy')
+        plt.ylabel('Accuracy')
+        plt.xlabel('Epoch')
+        plt.legend(['train', 'validation'], loc='lower right')
+        plt.savefig(f'{self.model_folder}/{self.model_name}/{self.model_name}_accuracy.png',
                     bbox_inches='tight', dpi=150)
         return plt.show()
 
