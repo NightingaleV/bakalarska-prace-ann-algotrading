@@ -71,11 +71,11 @@ class ModelStrategies:
     # TRADING STRATEGIES
     # ------------------------------------------------------------------------------
     # Prediction Threshold Strategy
-    def prediction_strategy(self, df, threshold, origin, calc_drawdown=True, form='list'):
+    def prediction_strategy(self, df, origin, threshold, calc_drawdown=True, form='list'):
         # Threshold
         pred_treshold = round(threshold, 6)
         # Set trading orders
-        self.calc_trade_positions(df, origin=origin, threshold=pred_treshold)
+        self.set_trade_positions(df, origin=origin, threshold=pred_treshold)
         # Calc Returns / Fees
         cum_pip_ret, cum_pip_fees = self.calc_pips_return(df)
         # Calc Sharpe
@@ -103,6 +103,12 @@ class ModelStrategies:
                         'pip_fees': cum_pip_fees,
                         'n_trades': n_trades}
         return strategy
+
+    @staticmethod
+    def set_trade_positions(dataset, origin=0, threshold=0):
+        dataset['long'] = np.where(dataset['prediction'] > origin + threshold, 1, 0)
+        dataset['short'] = np.where(dataset['prediction'] < origin - threshold, 1, 0)
+        return dataset
 
     # Calculate return in pip for dataset - Needed close/long/short
     def calc_pips_return(self, dataset):
