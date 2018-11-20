@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 
 class ModelEvaluation:
@@ -12,6 +13,7 @@ class ModelEvaluation:
         self.rmse_train = 0
         self.rmse_test = 0
 
+    # PREDICTION ACCURACY
     @staticmethod
     def calc_acc(dataset, origin=0, actual_slope='actual', predicted_slope='prediction'):
         # True if actual are in same direction as predictions
@@ -22,3 +24,11 @@ class ModelEvaluation:
         # Percentage of positive values
         acc = (directions.iloc[0] / (directions.sum())) * 100
         return acc.round(2)
+
+    # ROOT MEAN SQUARED ERROR
+    @staticmethod
+    def calc_rmse(actual, prediction):
+        df_rmse = pd.DataFrame(data=np.hstack((actual, prediction)),
+                               columns=['actual', 'prediction'])
+        rmse = ((df_rmse['actual'] - df_rmse['prediction']) ** 2).mean() ** .5
+        return rmse
