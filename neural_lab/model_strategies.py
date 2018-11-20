@@ -144,37 +144,60 @@ class ModelStrategies:
     def calc_sharpe_ratio(dataset, column_returns: str):
         # Risk
         strategy_risk = dataset[column_returns].iloc[1:].std()
-        strategy_risk = round(strategy_risk, 5)
+        strategy_risk = round(strategy_risk, 6)
         # Sharpe
         strategy_mean = dataset[column_returns].iloc[1:].mean()
         if strategy_risk == 0:
             return 0
         else:
             sharpe = strategy_mean / strategy_risk
-            sharpe = round(sharpe, 4)
+            sharpe = round(sharpe, 5)
         return sharpe
 
     @staticmethod
-    def calc_drawdown(dataset, cumulative_returns):
+    def calc_drawdown(dataset, column_cumulative_returns: str):
         # Calculate the cumulative returns curve
         # and set up the High Water Mark
         # Then create the drawdown and duration series
         hwm = [0]
-        eq_idx = dataset[cumulative_returns].index
+        eq_idx = dataset[column_cumulative_returns].index
         drawdown = pd.Series(index=eq_idx)
         drawdown_perc = pd.Series(index=eq_idx)
         duration = pd.Series(index=eq_idx)
 
         # Loop over the index range
         for t in range(1, len(eq_idx)):
-            cur_hwm = max(hwm[t - 1], dataset[cumulative_returns][t])
+            cur_hwm = max(hwm[t - 1], dataset[column_cumulative_returns][t])
             hwm.append(cur_hwm)
-            drawdown[t] = hwm[t] - dataset[cumulative_returns][t]
+            drawdown[t] = hwm[t] - dataset[column_cumulative_returns][t]
             drawdown_perc[t] = 0 if hwm[t] == 0 else drawdown[t] / hwm[t]
             duration[t] = 0 if drawdown[t] == 0 else duration[t - 1] + 1
         max_drawdown = drawdown.max().round(1)
         max_drawdown_pct = (drawdown_perc.max() * 100).round(1)
         return max_drawdown, max_drawdown_pct, duration.max()
+
+    @staticmethod
+    def calc_win_rate(dataset, column_cumulative_returns: str):
+        df = dataset.copy()
+        results = []
+        for position in ['long', 'short']:
+            df['rets_at_start_of_trade'] = df[column_cumulative_returns].shift(1).where(
+                (df[position] == 1) & (df[position].shift(1) == 0), pd.np.nan)
+            df['rets_at_start_of_trade'] = df['rets_at_start_of_trade'].ffill().astype(
+                df[column_cumulative_returns].dtype)
+            df['profit_from_position'] = (
+                    df[column_cumulative_returns] - df['rets_at_start_of_trade']).where(
+                (df[position] == 1) & (df[position].shift(-1) == 0), pd.np.nan)
+            trades_won = sum(df['profit_from_position'].pct_change().fillna(0) > 0)
+            trades_lost = sum(df['profit_from_position'].pct_change().fillna(0) < 0)
+            results.append([trades_won, trades_lost])
+        try:
+            winrate_in_pct = ((results[0][0] + results[1][0]) / (
+                    sum(results[0]) + sum(results[1]))) * 100
+        except ZeroDivisionError:
+            winrate_in_pct = 0
+        winrate_in_pct = round(winrate_in_pct, 2)
+        return winrate_in_pct
 
     @staticmethod
     def get_cumulative_pip_return(dataset):
