@@ -104,6 +104,8 @@ class ModelStrategies:
                         'n_trades': n_trades}
         return strategy
 
+    # STRATEGY CALCULATION METHODS
+    # ------------------------------------------------------------------------------
     @staticmethod
     def set_trade_positions(dataset, origin=0, threshold=0):
         dataset['long'] = np.where(dataset['prediction'] > origin + threshold, 1, 0)
@@ -136,6 +138,20 @@ class ModelStrategies:
         cum_pip_fees = dataset.iloc[-1][-1]
 
         return cum_pip_return, cum_pip_fees
+
+    @staticmethod
+    def calc_sharpe_ratio(dataset, column_returns: str):
+        # Risk
+        strategy_risk = dataset[column_returns].iloc[1:].std()
+        strategy_risk = round(strategy_risk, 5)
+        # Sharpe
+        strategy_mean = dataset[column_returns].iloc[1:].mean()
+        if strategy_risk == 0:
+            return 0
+        else:
+            sharpe = strategy_mean / strategy_risk
+            sharpe = round(sharpe, 4)
+        return sharpe
 
     @staticmethod
     def get_cumulative_pip_return(dataset):
