@@ -1,6 +1,10 @@
 from typing import Dict
+# Data Science
 import numpy as np
 import pandas as pd
+# Visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 
 class ModelStrategies:
@@ -245,3 +249,21 @@ class ModelStrategies:
     @staticmethod
     def get_cumulative_pip_return(dataset):
         return round(dataset['cum_pip_ret'].iloc[-1], 2)
+
+    # VISUALIZATION OF RESULTS
+    # ------------------------------------------------------------------------------
+    # Line Chart - X: Thresholds / Y: Return in Pips
+    def threshold_optimization_plot(self, dataset, name: str = 'threshold_optimization'):
+        """
+        :type dataset: object
+        :type name: str
+        Dataset with results of Strategy Optimization
+        """
+        sns.set()
+        plt.plot(dataset['threshold'], dataset['pip_profit'])
+        plt.title('Threshold Optimization')
+        plt.ylabel('Pip Return')
+        plt.xlabel('Threshold')
+        plt.savefig('trained_models/{}/{}.png'.format(self.name, name),
+                    bbox_inches='tight', dpi=150)
+        return plt.show()
