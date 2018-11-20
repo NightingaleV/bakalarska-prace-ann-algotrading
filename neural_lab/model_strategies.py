@@ -252,18 +252,41 @@ class ModelStrategies:
 
     # VISUALIZATION OF RESULTS
     # ------------------------------------------------------------------------------
-    # Line Chart - X: Thresholds / Y: Return in Pips
-    def threshold_optimization_plot(self, dataset, name: str = 'threshold_optimization'):
+    # Line Chart - X: Thresholds & Y: Return in Pips
+    def plot_threshold_optimization(self, dataset, plot_name: str = 'threshold_optimization'):
         """
-        :type dataset: object
-        :type name: str
-        Dataset with results of Strategy Optimization
+        dataset = Dataset with results of Strategy Optimization
         """
         sns.set()
         plt.plot(dataset['threshold'], dataset['pip_profit'])
+
+        # TODO slugify plot name parameter into title
         plt.title('Threshold Optimization')
         plt.ylabel('Pip Return')
         plt.xlabel('Threshold')
-        plt.savefig('trained_models/{}/{}.png'.format(self.name, name),
+        plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
+                    bbox_inches='tight', dpi=150)
+        return plt.show()
+
+    # Subplots of Close price & Cumulative returns
+    def plot_cumulative_returns(self, dataset, plot_name=''):
+        """
+        dataset = Dataset with results of Strategy Calculation
+        """
+        sns.set()
+        plt.figure(figsize=(10, 8))
+        # Close Price
+        plt.subplot(2, 1, 1)
+        plt.plot(dataset['close'])
+        plt.title('Close Price / Cumulative Returns')
+        plt.ylabel('Price')
+        plt.legend(['close price'], loc='lower right')
+        # Pip Returns
+        plt.subplot(2, 1, 2)
+        plt.plot(dataset['cum_pip_ret'], color='coral')
+        plt.ylabel('Pip returns')
+        plt.legend(['returns in pip'], loc='lower right')
+        # Save plot
+        plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
                     bbox_inches='tight', dpi=150)
         return plt.show()
