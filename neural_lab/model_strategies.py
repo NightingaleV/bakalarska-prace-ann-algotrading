@@ -13,6 +13,7 @@ class ModelStrategies:
     def __init__(self):
         self.pip: float = 0.
         self.set_pip_size()
+
         # PREDICTION STRATEGY
         # Optimized Treshold
         self.nn_pred_strategy_best_threshold = 0
@@ -253,7 +254,8 @@ class ModelStrategies:
     # VISUALIZATION OF RESULTS
     # ------------------------------------------------------------------------------
     # Line Chart - X: Thresholds & Y: Return in Pips
-    def plot_threshold_optimization(self, dataset, plot_name: str = 'threshold_optimization'):
+    def plot_threshold_optimization(self, dataset, plot_name: str = 'threshold_optimization',
+                                    title: str = 'Threshold Optimization'):
         """
         dataset = Dataset with results of Strategy Optimization
         """
@@ -261,7 +263,7 @@ class ModelStrategies:
         plt.plot(dataset['threshold'], dataset['pip_profit'])
 
         # TODO slugify plot name parameter into title
-        plt.title('Threshold Optimization')
+        plt.title(title)
         plt.ylabel('Pip Return')
         plt.xlabel('Threshold')
         plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
@@ -269,7 +271,9 @@ class ModelStrategies:
         return plt.show()
 
     # Subplots of Close price & Cumulative returns
-    def plot_cumulative_returns(self, dataset, plot_name=''):
+    def plot_cumulative_returns(self, dataset,
+                                plot_name: str='',
+                                title: str = 'Close Price / Cumulative Returns'):
         """
         dataset = Dataset with results of Strategy Calculation
         """
@@ -278,13 +282,13 @@ class ModelStrategies:
         # Close Price
         plt.subplot(2, 1, 1)
         plt.plot(dataset['close'])
-        plt.title('Close Price / Cumulative Returns')
-        plt.ylabel('Price')
+        plt.title(title)
+        plt.ylabel('Close Price')
         plt.legend(['close price'], loc='lower right')
         # Pip Returns
         plt.subplot(2, 1, 2)
         plt.plot(dataset['cum_pip_ret'], color='coral')
-        plt.ylabel('Pip returns')
+        plt.ylabel('Pip Returns')
         plt.legend(['returns in pip'], loc='lower right')
         # Save plot
         plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
