@@ -1,5 +1,8 @@
 # Imports
 import numpy as np
+# Visualization
+import matplotlib.pyplot as plt
+import seaborn as sns
 # Building Neural Network
 from keras import metrics
 from keras.models import Sequential
@@ -10,6 +13,8 @@ from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, T
 
 
 class ModelBuilder:
+
+    model_folder = 'trained_models'
 
     def __init__(self):
 
@@ -65,7 +70,7 @@ class ModelBuilder:
     def load_network(self):
         self.trained_model = self.build_network()
         self.trained_model.load_weights(
-            filepath=f'trained_models/{self.model_name}/{self.model_name}.hdf5',
+            filepath=f'{self.model_folder}/{self.model_name}/{self.model_name}.hdf5',
             by_name=False)
         return self.trained_model
 
@@ -92,7 +97,7 @@ class ModelBuilder:
                                                  min_lr=0.000001, verbose=verbose)
         # Save Best Model
         self_checkpoint = ModelCheckpoint(
-            filepath=f'trained_models/{self.model_name}/{self.model_name}.hdf5',
+            filepath=f'{self.model_folder}/{self.model_name}/{self.model_name}.hdf5',
             monitor=self.val_monitor_metric,
             verbose=1, save_best_only=True)
 
@@ -159,3 +164,24 @@ class ModelBuilder:
     def add_flat(model):
         model.add(Flatten())
         return model
+
+    # VISUALIZE TRAINING
+    # ------------------------------------------------------------------------------
+    def training_loss_plot(self):
+        sns.set()
+        plt.plot(self.training_history.history['loss'])
+        plt.plot(self.training_history.history['val_loss'])
+        y_bottom_border = self.history.history['loss'][-1] - 0.02
+        y_top_border = self.history.history['loss'][1] + 0.125
+        plt.ylim(y_bottom_border, y_top_border)
+        plt.title('Model Training Error')
+        plt.ylabel('Error')
+        plt.xlabel('Epoch')
+        plt.legend(['train', 'validation'], loc='upper right')
+        plt.savefig(f'{self.model_folder}/{self.model_name}/{self.model_name}_error.png',
+                    bbox_inches='tight', dpi=150)
+        return plt.show()
+
+
+class ModelPreset:
+    pass
