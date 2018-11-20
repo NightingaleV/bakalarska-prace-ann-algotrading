@@ -8,12 +8,13 @@ class DatasetManager(TechnicalIndicators):
     PACKAGE_FOLDER = os.path.abspath(os.path.dirname(__file__))
     DATASET_FOLDER = os.path.join(PACKAGE_FOLDER, 'datasets')
 
-    def __init__(self, symbols='USD/JPY', postfix='12-16'):
+    def __init__(self, symbols='USD/JPY', timeframe=None,postfix='12-16'):
         TechnicalIndicators.__init__(self)
         self.symbols = symbols.upper()
         self.symbol_arr = self.symbols.lower().split('/')
         self.postfix = postfix
-        self.filename = '{}{}_{}.csv'.format(self.symbol_arr[0], self.symbol_arr[1], self.postfix)
+        self.timeframe = timeframe
+        self.filename = f'{self.symbol_arr[0]}{self.symbol_arr[1]}_{self.postfix}.csv'
         self.file = os.path.join(self.DATASET_FOLDER, self.filename)
         self.df = None
         self.df_copy = None
