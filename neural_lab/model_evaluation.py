@@ -5,7 +5,6 @@ import pandas as pd
 class ModelEvaluation:
 
     def __init__(self):
-
         # Accuracy
         self.test_acc = 0
 
