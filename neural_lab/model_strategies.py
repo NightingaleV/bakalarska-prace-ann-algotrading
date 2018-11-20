@@ -68,6 +68,42 @@ class ModelStrategies:
         else:
             self.pip = 0.0001
 
+    # TRADING STRATEGIES
+    # ------------------------------------------------------------------------------
+    # Prediction Threshold Strategy
+    def prediction_strategy(self, df, threshold, origin, calc_drawdown=True, form='list'):
+        # Threshold
+        pred_treshold = round(threshold, 6)
+        # Set trading orders
+        self.calc_trade_positions(df, origin=origin, threshold=pred_treshold)
+        # Calc Returns / Fees
+        cum_pip_ret, cum_pip_fees = self.calc_pips_return(df)
+        # Calc Sharpe
+        sharpe = self.calc_sharpe_ratio(df, 'pip_ret')
+        # Calc Win rate
+        winrate = self.calc_win_rate(df, 'cum_pip_ret')
+        # Calc Drawdown
+        max_drawdown = 0
+        if calc_drawdown:
+            max_drawdown, max_drawdown_pct, duration = self.calc_drawdown(df, 'cum_pip_ret')
+        # Number of Trades
+        n_trades = int(cum_pip_fees / self.SPREAD)
+        # Return List or Dictionary
+        strategy = None
+        if form == 'list':
+            strategy = [pred_treshold, cum_pip_ret, sharpe, winrate, max_drawdown, cum_pip_fees,
+                        n_trades]
+
+        elif form == 'dict':
+            strategy = {'threshold': pred_treshold,
+                        'pip_profit': cum_pip_ret,
+                        'sharpe': sharpe,
+                        'winrate': winrate,
+                        'max_drawdown': max_drawdown,
+                        'pip_fees': cum_pip_fees,
+                        'n_trades': n_trades}
+        return strategy
+
     # Calculate return in pip for dataset - Needed close/long/short
     def calc_pips_return(self, dataset):
         pip = self.pip
