@@ -135,4 +135,17 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     actual_train = y_train
     actual_test = y_test
 
-    
+    # CREATE SETS FOR EVALUATION
+    # Columns: Actual, Prediction, Close Price
+    # ------------------------------------------------------------------------------
+    # TRAIN Evaluation Set
+    df_train_eval = model.create_train_eval_set(actual_train, predictions_train)
+    # VALIDATION Evaluation Set
+    df_val_eval = model.create_val_eval_set(actual_train, predictions_train)
+    # TEST Evaluation Set
+    df_test_eval = model.create_test_eval_set(actual_test, predictions_test, y_test_price)
+
+    # ACCURACY EVALUATION
+    # ------------------------------------------------------------------------------
+    model.test_score = model.calc_acc(df_train_eval.copy(), origin=0.5, actual_col='actual',
+                                      prediction_col='prediction')
