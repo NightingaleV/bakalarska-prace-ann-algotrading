@@ -10,7 +10,8 @@ import seaborn as sns
 class ModelStrategies:
     SPREAD = 1.5
 
-    def __init__(self):
+    def __init__(self, data_manager=None):
+        self.data_manager = data_manager
         self.pip: float = 0.
         self.set_pip_size()
 
@@ -69,7 +70,7 @@ class ModelStrategies:
         self.macd_strategy_win_pct = strategy['winrate']
 
     def set_pip_size(self):
-        if self.dataset == 'USD/JPY':
+        if self.data_manager.symbol == 'USD/JPY':
             self.pip = 0.01
         else:
             self.pip = 0.0001

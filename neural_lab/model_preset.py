@@ -17,7 +17,6 @@ from .model_evaluation import ModelEvaluation
 
 
 class ModelBuilder:
-
     models_folder = 'trained_models'
 
     def __init__(self):
@@ -26,10 +25,19 @@ class ModelBuilder:
         self.compiled_model = None
         self.trained_model = None
         self.training_history = None
+        self.vector_shape = 0
+        # Calculated by DataManager in test_train_split
+        self.train_rows = None
+        self.test_rows = None
+        self.validation_rows = None
 
         # GENERAL
         self.model_name: str = 'model_ann'
         self.val_size: float = 0.5
+
+        # PREDICTION PERIODS
+        self.n_past: int = 10
+        self.n_future: int = 3
 
         # PROPERTIES
         self.epochs: int = 100
@@ -59,6 +67,41 @@ class ModelBuilder:
 
     # MODEL WORKFLOW
     # ------------------------------------------------------------------------------
+    def create_train_vectors(self,df_train, scaled_df_train):
+        n_columns = len(df_train.columns)
+        last_column = n_columns - 1
+        # Train Vectors
+        x_train, y_train = [], []
+        for i in range(self.n_past, len(df_train) - self.n_future + 1):
+            x_train.append(scaled_df_train[i - self.n_past:i, 0:last_column])
+            y_train.append(df_train.iloc[i:i + 1, last_column].values)
+        # Vectors must be in numpy arr
+        x_train, y_train = np.array(x_train), np.array(y_train)
+        # Reshape Vector
+        y_train = y_train.reshape(y_train.shape[0], 1)
+        # Save vector shape for NN input layer
+        self.vector_shape = x_train.shape
+
+        return x_train, y_train
+
+    def create_test_vectors(self, df_test, scaled_df_test, df_test_close):
+        n_columns = len(df_test.columns)
+        last_column = n_columns - 1
+        # Test Vectors
+        x_test, y_test, y_test_price = [], [], []
+        for i in range(self.n_past, len(df_test) - self.n_future + 1):
+            x_test.append(scaled_df_test[i - self.n_past:i, 0:last_column])
+            y_test.append(df_test.iloc[i:i + 1, last_column].values)
+            y_test_price.append(df_test_close.iloc[i:i + 1].values)
+        # Vectors must be in numpy arr
+        x_test, y_test, y_test_price = np.array(x_test), np.array(y_test), np.array(
+            y_test_price)
+        # Reshape Vector
+        y_test, y_test_price = y_test.reshape(y_test.shape[0], 1), y_test_price.reshape(
+            y_test.shape[0], 1)
+
+        return x_test, y_test, y_test_price
+
     def build_network(self):
         # Build model
 
@@ -211,5 +254,4 @@ class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
     def __init__(self, data_manager=None):
         ModelBuilder.__init__(self)
         ModelEvaluation.__init__(self)
-        ModelStrategies.__init__(self)
-        self.data_manager = data_manager
+        ModelStrategies.__init__(self, data_manager)
