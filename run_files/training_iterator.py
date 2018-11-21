@@ -77,4 +77,32 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     dm.stochastic_oscilator(25, 3, 3)
     dm.get_indicators(target=model.model_task)
 
+    # Derived Quantities
+    dm.df['past_price_regression'] = dm.df[dm.mean_indicators[0]] / dm.df[
+        dm.mean_indicators[0]].shift(
+        model.n_future)
+    dm.df['past_log_regression'] = np.log(dm.df['past_price_regression'])
+    for mean_average in dm.mean_indicators:
+        dm.df['mean_diff_{}'.format(mean_average[-2:])] = dm.df[mean_average] - dm.df[
+            mean_average].shift(1)
+        dm.df['mean_ret_{}'.format(mean_average[-2:])] = np.log(
+            dm.df[mean_average] / dm.df[mean_average].shift(1))
+
+    # CLASSIFICATION VALUES
+    dm.df['future_price_regression'] = dm.df[dm.mean_indicators[0]].shift(-model.n_future) / dm.df[
+        dm.mean_indicators[0]]
+    dm.df[model.model_task] = np.where(dm.df['future_price_regression'] > 1, 1, 0)
+
+    # For training without EMAs
+    # dm.df.drop(dm.mean_indicators, axis=1, inplace=True)
+    # Drop unnecessary values
+    dm.df.drop(['low', 'high', 'open'], axis=1, inplace=True)
+    dm.df.drop(['%d', 'past_price_regression', 'future_price_regression'], axis=1, inplace=True)
+    dm.df = dm.df.iloc[30:-5]
+    dm.df.reset_index(drop=True, inplace=True)
+    dm.get_indicators(target=model.model_task)
+
+    # SPLIT Train/Test/Test(close price)
+    df_train, df_test, df_test_close = dm.test_train_split(model)
+
     
