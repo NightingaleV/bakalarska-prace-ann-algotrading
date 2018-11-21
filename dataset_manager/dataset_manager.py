@@ -8,10 +8,11 @@ class DatasetManager(TechnicalIndicators):
     PACKAGE_FOLDER = os.path.abspath(os.path.dirname(__file__))
     DATASET_FOLDER = os.path.join(PACKAGE_FOLDER, 'datasets')
 
-    def __init__(self, symbols='USD/JPY', timeframe=None,postfix='12-16'):
+    def __init__(self, symbols='USD/JPY', timeframe=None, postfix='12-16'):
         TechnicalIndicators.__init__(self)
-        self.symbols = symbols.upper()
-        self.symbol_arr = self.symbols.lower().split('/')
+        self.symbol = symbols.upper()
+        self.symbol_arr = self.symbol.lower().split('/')
+        self.symbol_slug = self.symbol_arr[0] + self.symbol_arr[1]
         self.postfix = postfix
         self.timeframe = timeframe
         self.filename = f'{self.symbol_arr[0]}{self.symbol_arr[1]}_{self.postfix}.csv'
@@ -21,13 +22,21 @@ class DatasetManager(TechnicalIndicators):
 
         # Basic Workflow Tasks
         self.init_dataset()
-        self.change_index()
-        self.remove_nan_values()
+        try:
+            self.change_index()
+            self.remove_nan_values()
+        except (KeyError, TypeError):
+            print('Unable to initialize dataset')
+            raise
 
     # Import Dataset from CSV
     def init_dataset(self):
-        print('Importing Dataset: ' + self.filename)
-        self.df = pd.read_csv(self.file)
+        print('Import dataset: ' + self.filename)
+        try:
+            self.df = pd.read_csv(self.file)
+        except FileNotFoundError:
+            print('Unable to import ' + self.filename)
+            raise
         # TODO
         # If file has different separator
         # self.df = pd.read_csv(self.file, sep=';')
@@ -39,13 +48,13 @@ class DatasetManager(TechnicalIndicators):
 
     # Clean Dataset from missing values
     def remove_nan_values(self):
-        print('Cleaning dataset')
+        print('Clean data')
         while self.df.isnull().any().any():
             self.df.fillna(method='ffill', inplace=True)
 
     # Aggregate Dataset - 1D, 1H, 5Min etc...
     def resample(self, period):
-        print('Aggregating dataset on ' + period + ' candles')
+        print('Aggregate data on ' + period + ' candles')
         self.df = self.df.resample(period).agg({'open': 'first',
                                                 'high': 'max',
                                                 'low': 'min',

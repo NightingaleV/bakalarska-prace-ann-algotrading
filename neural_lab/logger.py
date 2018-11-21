@@ -46,7 +46,7 @@ class Logger:
         ****************************************
         # GENERAL
         MODEL: {self.model.model_name} 
-        DATASET: {self.dm.symbols} Timestamp: {self.dm.timeframe}
+        DATASET: {self.dm.symbol} Timestamp: {self.dm.timeframe}
         TIME: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
         Test size: {self.model.test_size} / Val Size {self.model.val_size}
         Moving Averages: {self.model.mean_indicators}
