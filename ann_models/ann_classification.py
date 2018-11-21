@@ -2,6 +2,7 @@
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 from keras import regularizers
+from keras import backend as K
 # CUSTOM
 from neural_lab.model_preset import ModelPreset
 
@@ -55,6 +56,10 @@ class ModelNeuralNetwork(ModelPreset):
         self.set_model_name()
 
     def build_network(self):
+        # Clear Tensors, for iteration purpose
+        K.clear_session()
+
+        # NEURAL NETWORK
         self.compiled_model = Sequential()
 
         # 1. HIDDEN LAYER
