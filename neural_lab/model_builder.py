@@ -43,6 +43,8 @@ class ModelBuilder:
         # PROPERTIES
         self.epochs: int = 100
         self.loss_func: str = 'binary_crossentropy'
+        self.activation_func: str = 'tanh'
+        self.output_func: str = 'sigmoid'
         self.batch_size: int = 32
         self.optimizer: str = 'Adam'
         self.starting_learn_rate: float = 0.01
