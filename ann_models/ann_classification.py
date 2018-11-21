@@ -10,20 +10,17 @@ class ModelNeuralNetwork(ModelPreset):
 
     def __init__(self, data_manager):
         # Inherit Model Preset
-        super(ModelNeuralNetwork).__init__(data_manager)
+        super(ModelNeuralNetwork, self).__init__(data_manager)
 
         # GENERAL
         self.model_task: str = 'classification'
         self.model_postfix: str = ''
-        self.model_name: str = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
-                               f'{self.data_manager.postfix}' \
-                               f'_MA{self.data_manager.mean_indicators[0]}' \
-                               f'_past{self.n_past}_fut{self.n_future}_{self.model_postfix}'
-
+        self.model_name: str = 'model_name'
         self.val_size: float = 0.15
         self.test_size: float = 0.2
 
         # PREDICTION PERIODS
+        self.predict_ma: int = 30
         self.n_past: int = 10
         self.n_future: int = 3
 
@@ -54,13 +51,16 @@ class ModelNeuralNetwork(ModelPreset):
         self.monitor_metric: str = 'acc'
         self.val_monitor_metric: str = 'val_' + self.monitor_metric
 
+        # Set custom model name
+        self.set_model_name()
+
     def build_network(self):
         self.compiled_model = Sequential()
 
         # 1. HIDDEN LAYER
         self.compiled_model.add(Dense(units=self.neurons_hidden,
                                       kernel_initializer='uniform',
-                                      input_shape=(self.shape[1], self.shape[2])))
+                                      input_shape=(self.vector_shape[1], self.vector_shape[2])))
         # Batch Normalization
         self.add_batch_norm()
         # Activation Function
@@ -85,3 +85,9 @@ class ModelNeuralNetwork(ModelPreset):
                                       kernel_initializer='uniform'))
         # COMPILE MODEL
         super(ModelNeuralNetwork, self).build_network()
+
+    def set_model_name(self):
+        self.model_name = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
+                          f'{self.data_manager.postfix}' \
+                          f'_MA{self.predict_ma}' \
+                          f'_past{self.n_past}_fut{self.n_future}_{self.model_postfix}'
