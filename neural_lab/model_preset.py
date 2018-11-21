@@ -112,7 +112,7 @@ class ModelBuilder:
             optimizer=eval(f'{self.optimizer}(lr={self.starting_learn_rate})'),
             loss=self.loss_func,
             metrics=[self.monitor_metric])
-
+        print('Neural Network successfully compiled')
         return self.compiled_model
 
     # Compile model + load saved weights
@@ -122,6 +122,7 @@ class ModelBuilder:
         self.trained_model.load_weights(
             filepath=f'{self.models_folder}/{self.model_name}/{self.model_name}.hdf5',
             by_name=False)
+        print('Weights successfully imported')
         return self.trained_model
 
     # Compile model + retrain model
@@ -224,7 +225,7 @@ class ModelBuilder:
         sns.set()
         plt.plot(self.training_history.history['loss'])
         plt.plot(self.training_history.history['val_loss'])
-        y_bottom_border = self.training_history.history['loss'][-1] - 0.02
+        y_bottom_border = self.training_history.history['loss'][-1] - 0.05
         y_top_border = self.training_history.history['loss'][1] + 0.125
         plt.ylim(y_bottom_border, y_top_border)
         plt.title('Model Training Error')
