@@ -105,4 +105,15 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SPLIT Train/Test/Test(close price)
     df_train, df_test, df_test_close = dm.test_train_split(model)
 
+    # NORMALIZATION
+    # --------------------------------------------------------------------------
+    scaler = StandardScaler()
+    scaled_df_train = scaler.fit_transform(df_train[dm.mean_indicators + dm.indicators])
+    scaled_df_test = scaler.transform(df_test[dm.mean_indicators + dm.indicators])
+
+    # INPUT VECTORS
+    # --------------------------------------------------------------------------
+    x_train, y_train = model.create_train_vectors(df_train, scaled_df_train)
+    x_test, y_test, y_test_price = model.create_test_vectors(df_test, scaled_df_test, df_test_close)
+
     
