@@ -200,4 +200,97 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # PLOT threshold optimization
     model.plot_threshold_optimization(df_strategies, 'threshold_macd_optimization')
 
+    # TRADING STRATEGIES EVALUATION
+    # --------------------------------------------------------------------------
+    # Calculating strategies with best threshold parameters
+    best_strategies_evaluations = []
+    # TEST SET EVALUATION
+    # --------------------------------------------------------------------------
+    # PREDICTION STRATEGY
+    # -------------------
+    df_eval = df_test_eval.copy()
+    strategy = model.prediction_strategy(df_eval, origin=0.5,
+                                         threshold=model.nn_pred_strategy_best_threshold)
+    strategy.insert(0, 'test_nn_pred')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'nn_pred_test_returns')
+    # SAVE to parameters for Logger
+    strategy_dict = model.prediction_strategy(df=df_test_eval.copy(), origin=0.5,
+                                              threshold=model.nn_pred_strategy_best_threshold,
+                                              form='dict')
+    model.set_nn_pred_strategy_parameters(strategy_dict)
+
+    # MACD STRATEGY
+    # -------------------
+    df_eval = df_test_eval.copy()
+    strategy = model.macd_strategy(df_eval, origin=0.5,
+                                   threshold=model.macd_strategy_best_threshold)
+    strategy.insert(0, 'test_macd')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'macd_test_returns')
+    # SAVE to parameters for Logger
+    strategy_dict = model.macd_strategy(df=df_test_eval.copy(), origin=0.5,
+                                        threshold=model.macd_strategy_best_threshold, form='dict')
+    model.set_macd_strategy_parameters(strategy_dict)
+
+    # TRAIN SET EVALUATION
+    # ------------------------------------------------------------------------------
+    # PREDICTION STRATEGY
+    # -------------------
+    df_eval = df_train_eval.copy()
+    strategy = model.prediction_strategy(df_eval, origin=0.5,
+                                         threshold=model.nn_pred_strategy_best_threshold)
+    strategy.insert(0, 'train_nn_pred')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'nn_pred_train_returns')
+    # SAVE to parameters for Logger
+    model.nn_pred_train_pip_return = model.get_cumulative_pip_return(df_eval)
+
+    # MACD STRATEGY
+    # -------------------
+    df_eval = df_train_eval.copy()
+    strategy = model.macd_strategy(df_eval, origin=0.5,
+                                   threshold=model.macd_strategy_best_threshold)
+    strategy.insert(0, 'train_macd')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'macd_train_returns')
+    # SAVE to parameters for Logger
+    model.macd_strategy_train_pip_return = model.get_cumulative_pip_return(df_eval)
+
+    # VALIDATION SET EVALUATION
+    # ------------------------------------------------------------------------------
+    # PREDICTION STRATEGY
+    # -------------------
+    df_eval = df_val_eval.copy()
+    strategy = model.prediction_strategy(df_eval, origin=0.5,
+                                         threshold=model.nn_pred_strategy_best_threshold)
+    strategy.insert(0, 'val_nn_pred')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'nn_pred_val_returns')
+    # SAVE to parameters for Logger
+    model.nn_pred_val_pip_return = model.get_cumulative_pip_return(df_eval)
+
+    # MACD STRATEGY
+    # -------------------
+    df_eval = df_val_eval.copy()
+    strategy = model.macd_strategy(df_eval, origin=0.5,
+                                   threshold=model.macd_strategy_best_threshold)
+    strategy.insert(0, 'val_macd')
+    # SAVE to list of strategies
+    best_strategies_evaluations.append(strategy)
+    # PLOT Returns
+    model.plot_cumulative_returns(df_eval, 'macd_val_returns')
+    # SAVE to parameters for Logger
+    model.macd_strategy_val_pip_return = model.get_cumulative_pip_return(df_eval)
+
     
