@@ -29,6 +29,11 @@ dm = DatasetManager(currency_pair, data_postfix).resample(time_frame)
 dm.df.reset_index(drop=True, inplace=True)
 dm.save_df_copy_into_memory()
 
+# LOGGER
+# ------------------------------------------------------------------------------
+logger = Logger()
+logger.set_data_manager(dm)
+
 # ITERATION PARAMETERS
 # ------------------------------------------------------------------------------
 # Length of predicted Moving Average
@@ -50,7 +55,7 @@ models_evaluations = []
 for moving_average, periods, iteration_postfix in itertools.product(moving_average_periods,
                                                                     predictions_periods,
                                                                     multiple_iterations):
-    # IMPORT NEURAL NETWORK
+    # SETUP MODEL
     # --------------------------------------------------------------------------
     model = ModelNeuralNetwork(data_manager=dm)
     model.predict_ma: int = moving_average
@@ -58,6 +63,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.n_future: int = periods[1]
     model.model_task: str = 'classification'
     model.model_postfix: str = iteration_postfix
+
+    logger.set_model(model)
 
     # INDICATORS
     # --------------------------------------------------------------------------
@@ -116,8 +123,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     x_train, y_train = model.create_train_vectors(df_train, scaled_df_train)
     x_test, y_test, y_test_price = model.create_test_vectors(df_test, scaled_df_test, df_test_close)
 
-    # TRAIN NETWORK
-    # ------------------------------------------------------------------------------
+    # TRAIN NEURAL NETWORK
+    # --------------------------------------------------------------------------
     trained_model, training_history = model.train_network(x_train, y_train)
     # Plot Training Progress of Error
     model.plot_training_loss()
@@ -137,7 +144,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
 
     # CREATE SETS FOR EVALUATION
     # Columns: Actual, Prediction, Close Price
-    # ------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     # TRAIN Evaluation Set
     df_train_eval = model.create_train_eval_set(actual_train, predictions_train)
     # VALIDATION Evaluation Set
@@ -146,6 +153,51 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     df_test_eval = model.create_test_eval_set(actual_test, predictions_test, y_test_price)
 
     # ACCURACY EVALUATION
-    # ------------------------------------------------------------------------------
+    # --------------------------------------------------------------------------
     model.test_score = model.calc_acc(df_train_eval.copy(), origin=0.5, actual_col='actual',
                                       prediction_col='prediction')
+
+    # TRADING STRATEGIES OPTIMIZATION
+    # --------------------------------------------------------------------------
+    # NN Trading Threshold Optimization on TRAIN Set
+    strategies = []
+    for threshold in np.linspace(0, 0.45, 61):
+        df_eval = df_train_eval.copy()
+        # Calc without drawdown, it is very time consuming
+        strategy = model.prediction_strategy(df_eval, origin=0.5, threshold=threshold,
+                                             calc_drawdown=False)
+        strategies.append(strategy)
+    df_strategies = pd.DataFrame(data=strategies,
+                                 columns=['threshold', 'pip_profit', 'sharpe', 'winrate',
+                                          'drawdown', 'fees', 'trades_n', ])
+    # SAVE Strategies into CSV
+    df_strategies.to_csv(f'{model.models_folder}/{model.model_name}/pred_strategy_optimization.csv',
+                         encoding='utf-8',
+                         index=False)
+    # SAVE threshold parameter of the best strategy
+    model.set_pred_best_threshold(df_strategies)
+    # PLOT threshold optimization
+    model.plot_threshold_optimization(df_strategies, plot_name='threshold_nn_pred_optimization')
+    # MACD Strategy optimization
+    strategies = []
+    for threshold in np.linspace(0, 0.45, 61):
+        df_eval = df_train_eval.copy()
+        # Calc without drawdown, it is very time consuming
+        strategy = model.macd_strategy(df_eval, origin=0.5, threshold=threshold,
+                                       calc_drawdown=False)
+        strategies.append(strategy)
+    df_strategies = pd.DataFrame(data=strategies,
+                                 columns=['threshold', 'pip_profit', 'sharpe', 'winrate',
+                                          'drawdown',
+                                          'fees', 'trades_n'])
+    # SAVE Strategies into CSV
+    df_strategies.to_csv(
+        'trained_models/{}/macd_strategy_optimization.csv'.format(model.model_name),
+        encoding='utf-8',
+        index=False)
+    # SAVE threshold parameter of the best strategy
+    model.set_macd_best_threshold(df_strategies)
+    # PLOT threshold optimization
+    model.plot_threshold_optimization(df_strategies, 'threshold_macd_optimization')
+
+    
