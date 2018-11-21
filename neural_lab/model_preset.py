@@ -5,11 +5,16 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 # Building Neural Network
-from keras import metrics
 from keras.models import Sequential
 from keras.layers import Dense, Dropout
 from keras.layers import BatchNormalization, Flatten
 from keras.layers.advanced_activations import LeakyReLU, ELU
+from keras import metrics
+from keras.optimizers import Adam
+from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
+
+from keras.layers import Dense, Activation, Dropout
+from keras.layers import BatchNormalization, Flatten
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 # Custom
 from .model_strategies import ModelStrategies
@@ -107,7 +112,7 @@ class ModelBuilder:
 
         # Compile model
         self.compiled_model.compile(
-            optimizer=eval(self.optimizer + f'(lr={self.starting_learn_rate})'),
+            optimizer=eval(f'{self.optimizer}(lr={self.starting_learn_rate})'),
             loss=self.loss_func,
             metrics=[self.monitor_metric])
 
@@ -115,22 +120,24 @@ class ModelBuilder:
 
     # Compile model + load saved weights
     def load_network(self):
-        self.trained_model = self.build_network()
+        self.build_network()
+        self.trained_model = self.compiled_model
         self.trained_model.load_weights(
             filepath=f'{self.models_folder}/{self.model_name}/{self.model_name}.hdf5',
             by_name=False)
         return self.trained_model
 
     # Compile model + retrain model
-    def train_network(self, X_train, y_train, verbose: int = 1):
+    def train_network(self, x_train, y_train, verbose: int = 1):
         """
-        :param X_train:
+        :param x_train:
         :param y_train:
         :param verbose: int -- printing training progress
         :return:
         """
         # Compile Model
-        self.trained_model = self.build_network()
+        self.build_network()
+        self.trained_model = self.compiled_model
         # CALLBACKS
         # Dynamic Training Stop
         stop_training = EarlyStopping(monitor=self.val_monitor_metric,
@@ -152,7 +159,7 @@ class ModelBuilder:
         # tensor_board = TensorBoard(log_dir='{}'.format(self), write_graph=True, write_images=True)
 
         # Train Model
-        self.training_history = self.trained_model.fit(X_train,
+        self.training_history = self.trained_model.fit(x_train,
                                                        y_train,
                                                        shuffle=self.shuffle_inputs,
                                                        epochs=self.epochs,
