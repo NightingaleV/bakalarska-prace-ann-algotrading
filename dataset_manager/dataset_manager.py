@@ -19,6 +19,8 @@ class DatasetManager(TechnicalIndicators):
         self.file = os.path.join(self.DATASET_FOLDER, self.filename)
         self.df = None
         self.df_copy = None
+        self.indicators = []
+        self.mean_indicators = []
 
         # Basic Workflow Tasks
         self.init_dataset()
@@ -70,6 +72,21 @@ class DatasetManager(TechnicalIndicators):
     def restore_df(self):
         self.df = self.df_copy.copy()
 
+    # Get List of used indicators
+    def get_indicators(self, target='classification'):
+        self.indicators = []
+        self.mean_indicators = []
+        forbidden = ['open', 'high', 'close', 'low', 'volume']
+        for indicator in self.df.columns.tolist():
+            if any(indicator in price for price in forbidden) or indicator == target:
+                pass
+            elif ('EWMA' in indicator) | ('EMA' in indicator) | ('SMA' in indicator):
+                if indicator not in self.mean_indicators:
+                    self.mean_indicators.add(indicator)
+            else:
+                if indicator not in self.indicators:
+                    self.indicators.add(indicator)
+
     # Change borders of dataset
     def restrict(self, from_date, to_date=None):
         from_date = f"{from_date} 00:00:00"
@@ -104,3 +121,4 @@ class DatasetManager(TechnicalIndicators):
         model.train_rows = int((1 - model.test_size) * len(self.df))
         model.test_rows = int(model.test_size * len(self.df))
         model.validation_rows = int((1 - model.test_size) * model.val_size * len(self.df))
+
