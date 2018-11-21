@@ -181,7 +181,7 @@ class ModelBuilder:
         plt.ylabel('Error')
         plt.xlabel('Epoch')
         plt.legend(['train', 'validation'], loc='upper right')
-        plt.savefig(f'{self.models_folder}/{self.model_name}/{self.model_name}_error.png',
+        plt.savefig(f'{self.models_folder}/{self.model_name}/training_error.png',
                     bbox_inches='tight', dpi=150)
         return plt.show()
 
@@ -193,7 +193,7 @@ class ModelBuilder:
         plt.ylabel('Accuracy')
         plt.xlabel('Epoch')
         plt.legend(['train', 'validation'], loc='lower right')
-        plt.savefig(f'{self.models_folder}/{self.model_name}/{self.model_name}_accuracy.png',
+        plt.savefig(f'{self.models_folder}/{self.model_name}/training_accuracy.png',
                     bbox_inches='tight', dpi=150)
         return plt.show()
 
@@ -208,7 +208,8 @@ class ModelBuilder:
 
 class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
 
-    def __init__(self):
+    def __init__(self, data_manager=None):
         ModelBuilder.__init__(self)
         ModelEvaluation.__init__(self)
         ModelStrategies.__init__(self)
+        self.data_manager = data_manager

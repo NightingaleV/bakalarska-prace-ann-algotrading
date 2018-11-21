@@ -6,19 +6,26 @@ from keras import regularizers
 from neural_lab.model_preset import ModelPreset
 
 
-class NeuralNetworkModel(ModelPreset):
+class ModelNeuralNetwork(ModelPreset):
 
-    def __init__(self, model_name='model_ann'):
+    def __init__(self, data_manager):
         # Inherit Model Preset
-        super(NeuralNetworkModel).__init__()
-
-        self.n_past: int = 10
-        self.n_future: int = 3
+        super(ModelNeuralNetwork).__init__(data_manager)
 
         # GENERAL
-        self.model_name: str = model_name
+        self.model_task: str = 'classification'
+        self.model_postfix: str = ''
+        self.model_name: str = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
+                               f'{self.data_manager.postfix}' \
+                               f'_MA{self.data_manager.mean_indicators[0]}' \
+                               f'_past{self.n_past}_fut{self.n_future}_{self.model_postfix}'
+
         self.val_size: float = 0.15
         self.test_size: float = 0.2
+
+        # PREDICTION PERIODS
+        self.n_past: int = 10
+        self.n_future: int = 3
 
         # PROPERTIES
         self.neurons_hidden: int = 25
@@ -77,4 +84,4 @@ class NeuralNetworkModel(ModelPreset):
         self.compiled_model.add(Dense(units=self.neurons_output, activation=self.output_func,
                                       kernel_initializer='uniform'))
         # COMPILE MODEL
-        super(NeuralNetworkModel, self).build_network()
+        super(ModelNeuralNetwork, self).build_network()
