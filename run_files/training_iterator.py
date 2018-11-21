@@ -116,4 +116,23 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     x_train, y_train = model.create_train_vectors(df_train, scaled_df_train)
     x_test, y_test, y_test_price = model.create_test_vectors(df_test, scaled_df_test, df_test_close)
 
+    # TRAIN NETWORK
+    # ------------------------------------------------------------------------------
+    trained_model, training_history = model.train_network(x_train, y_train)
+    # Plot Training Progress of Error
+    model.plot_training_loss()
+    # Plot Training Progress of Accuracy
+    model.plot_training_metric()
+
+    # MAKE PREDICTION
+    # --------------------------------------------------------------------------
+    # Load Best Model
+    classifier = model.load_network()
+    # Make Predictions
+    predictions_train = classifier.predict(x_train)
+    predictions_test = classifier.predict(x_test)
+    # Set values for evaluation
+    actual_train = y_train
+    actual_test = y_test
+
     
