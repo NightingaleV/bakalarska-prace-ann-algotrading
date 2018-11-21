@@ -17,8 +17,14 @@ class DatasetManager(TechnicalIndicators):
         self.timeframe = timeframe
         self.filename = f'{self.symbol_arr[0]}{self.symbol_arr[1]}_{self.postfix}.csv'
         self.file = os.path.join(self.DATASET_FOLDER, self.filename)
+
         self.df = None
         self.df_copy = None
+
+        self.train_rows = 0
+        self.test_rows = 0
+        self.validation_rows = 0
+
         self.indicators = []
         self.mean_indicators = []
 
@@ -106,10 +112,10 @@ class DatasetManager(TechnicalIndicators):
 
     def test_train_split(self, model):
         self.calc_set_size(model=model)
-        df = self.df.copy()
-        df_train, df_test = df[0:model.train_rows].copy(), df[model.train_rows - model.n_past:len(
-            df)].copy()
-        df_test_close_price = df_test['close']
+        df_train, df_test = self.df[0:self.train_rows].copy(), self.df[
+                                                               self.train_rows - model.n_past:len(
+                                                                   self.df)].copy()
+        df_test_close_price = df_test['close'].copy()
         df_train.drop(['close'], axis=1, inplace=True)
         df_test.drop(['close'], axis=1, inplace=True)
         df_train.reset_index(drop=True, inplace=True)
@@ -118,7 +124,6 @@ class DatasetManager(TechnicalIndicators):
         return df_train, df_test, df_test_close_price
 
     def calc_set_size(self, model):
-        model.train_rows = int((1 - model.test_size) * len(self.df))
-        model.test_rows = int(model.test_size * len(self.df))
-        model.validation_rows = int((1 - model.test_size) * model.val_size * len(self.df))
-
+        self.train_rows = round((1 - model.test_size) * len(self.df))
+        self.test_rows = round(model.test_size * len(self.df))
+        self.validation_rows = round((1 - model.test_size) * model.val_size * len(self.df))

@@ -31,10 +31,6 @@ class ModelBuilder:
         self.trained_model = None
         self.training_history = None
         self.vector_shape = 0
-        # Calculated by DataManager in test_train_split
-        self.train_rows = None
-        self.test_rows = None
-        self.validation_rows = None
 
         # GENERAL
         self.model_name: str = 'model_ann'
@@ -72,9 +68,10 @@ class ModelBuilder:
 
     # MODEL WORKFLOW
     # ------------------------------------------------------------------------------
-    def create_train_vectors(self,df_train, scaled_df_train):
+    def create_train_vectors(self, df_train, scaled_df_train):
         n_columns = len(df_train.columns)
         last_column = n_columns - 1
+        last_column_scaled_df = last_column - 2
         # Train Vectors
         x_train, y_train = [], []
         for i in range(self.n_past, len(df_train) - self.n_future + 1):
@@ -135,6 +132,9 @@ class ModelBuilder:
         :param verbose: int -- printing training progress
         :return:
         """
+        # Create Folder if not exist
+        self.create_folder(self.model_name)
+
         # Compile Model
         self.build_network()
         self.trained_model = self.compiled_model
@@ -260,5 +260,5 @@ class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
 
     def __init__(self, data_manager=None):
         ModelBuilder.__init__(self)
-        ModelEvaluation.__init__(self)
+        ModelEvaluation.__init__(self, data_manager)
         ModelStrategies.__init__(self, data_manager)
