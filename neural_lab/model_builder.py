@@ -17,15 +17,15 @@ from keras.layers import Dense, Activation, Dropout
 from keras.layers import BatchNormalization, Flatten
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
 # Custom
-from .model_strategies import ModelStrategies
-from .model_evaluation import ModelEvaluation
+# from .model_strategies import ModelStrategies
+# from .model_evaluation import ModelEvaluation
 
 
 class ModelBuilder:
     models_folder = 'trained_models'
 
     def __init__(self):
-
+        print('Initialize ModelBuilder')
         # MODELS
         self.compiled_model = None
         self.trained_model = None
@@ -257,9 +257,9 @@ class ModelBuilder:
             os.makedirs(f'{cls.models_folder}/{name}')
 
 
-class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
-
-    def __init__(self, data_manager=None):
-        ModelBuilder.__init__(self)
-        ModelEvaluation.__init__(self, data_manager)
-        ModelStrategies.__init__(self, data_manager)
+# class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
+#
+#     def __init__(self, data_manager=None):
+#         super(ModelPreset, self).__init__()
+#         print('Initialize ModelPreset')
+#

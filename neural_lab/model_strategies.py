@@ -11,8 +11,9 @@ from .model_evaluation import ModelEvaluation
 class ModelStrategies(ModelEvaluation):
     SPREAD: float = 1.5
 
-    def __init__(self):
-        super(ModelStrategies, self).__init__()
+    def __init__(self, data_manager):
+        super(ModelStrategies, self).__init__(data_manager)
+        print('Initialize ModelStrategies')
         self.pip: float = 0.
         self.set_pip_size()
 
@@ -293,6 +294,6 @@ class ModelStrategies(ModelEvaluation):
         plt.ylabel('Pip Returns')
         plt.legend(['returns in pip'], loc='lower right')
         # Save plot
-        plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
+        plt.savefig('trained_models/{}/{}.png'.format(self.model_name, plot_name),
                     bbox_inches='tight', dpi=150)
         return plt.show()

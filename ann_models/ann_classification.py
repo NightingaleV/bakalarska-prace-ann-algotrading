@@ -4,14 +4,17 @@ from keras.layers import Dense, Activation
 from keras import regularizers
 from keras import backend as K
 # CUSTOM
-from neural_lab.model_preset import ModelPreset
+from neural_lab.model_builder import ModelBuilder
+from neural_lab.model_evaluation import ModelEvaluation
+from neural_lab.model_strategies import ModelStrategies
 
 
-class ModelNeuralNetwork(ModelPreset):
+class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
 
     def __init__(self, data_manager):
         # Inherit Model Preset
         super(ModelNeuralNetwork, self).__init__(data_manager)
+        print('Initialize ModelNeuralNetwork')
 
         # GENERAL
         self.model_task: str = 'classification'

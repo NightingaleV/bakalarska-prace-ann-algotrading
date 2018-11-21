@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
-from .model_preset import ModelBuilder
+from .model_builder import ModelBuilder
 
 
 class ModelEvaluation(ModelBuilder):
 
     def __init__(self, data_manager):
         super(ModelEvaluation, self).__init__()
+        print('Initialize ModelStrategies')
         # Calculated by DataManager in test_train_split
         self.data_manager = data_manager
 
