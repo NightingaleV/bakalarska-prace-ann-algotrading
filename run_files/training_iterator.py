@@ -293,4 +293,18 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to parameters for Logger
     model.macd_strategy_val_pip_return = model.get_cumulative_pip_return(df_eval)
 
-    
+    # EXPORT MODEL INFORMATION
+    # ------------------------------------------------------------------------------
+    # Results of best strategy evaluation
+    df_strategies_eval = pd.DataFrame(data=best_strategies_evaluations,
+                                      columns=['type', 'threshold', 'pip_profit', 'sharpe',
+                                               'winrate',
+                                               'drawdown', 'fees', 'trades_n'])
+    # Export Results to CSV
+    df_strategies_eval.to_csv(
+        f'{model.models_folder}/{model.model_name}/best_strategies_evaluation.csv',
+        encoding='utf-8', index=False)
+
+    # Log Model Parameters
+    logger.log_model_info()
+
