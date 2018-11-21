@@ -5,13 +5,14 @@ import pandas as pd
 # Visualization
 import matplotlib.pyplot as plt
 import seaborn as sns
+from .model_evaluation import ModelEvaluation
 
 
-class ModelStrategies:
-    SPREAD = 1.5
+class ModelStrategies(ModelEvaluation):
+    SPREAD: float = 1.5
 
-    def __init__(self, data_manager=None):
-        self.data_manager = data_manager
+    def __init__(self):
+        super(ModelStrategies, self).__init__()
         self.pip: float = 0.
         self.set_pip_size()
 
@@ -267,8 +268,8 @@ class ModelStrategies:
         plt.title(title)
         plt.ylabel('Pip Return')
         plt.xlabel('Threshold')
-        plt.savefig('trained_models/{}/{}.png'.format(self.name, plot_name),
-                    bbox_inches='tight', dpi=150)
+        plt.savefig(f'trained_models/{self.model_name}/{plot_name}.png', bbox_inches='tight',
+                    dpi=150)
         return plt.show()
 
     # Subplots of Close price & Cumulative returns

@@ -1,11 +1,12 @@
 import numpy as np
 import pandas as pd
+from .model_preset import ModelBuilder
 
 
-class ModelEvaluation:
+class ModelEvaluation(ModelBuilder):
 
     def __init__(self, data_manager):
-        # TODO Inherit Attributes For reference
+        super(ModelEvaluation, self).__init__()
         # Calculated by DataManager in test_train_split
         self.data_manager = data_manager
 
