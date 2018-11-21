@@ -19,9 +19,9 @@ class ModelEvaluation:
     # CREATE SETs FOR EVALUATION
     # ------------------------------------------------------------------------------
     @staticmethod
-    def create_test_eval_set(np_close, np_actual_test, np_prediction_test):
-        df_test_eval = pd.DataFrame(data=np.hstack((np_close, np_actual_test, np_prediction_test)),
-                                    columns=['close', 'actual', 'prediction'])
+    def create_test_eval_set(np_actual_test, np_prediction_test, np_close):
+        df_test_eval = pd.DataFrame(data=np.hstack((np_actual_test, np_prediction_test, np_close)),
+                                    columns=['actual', 'prediction', 'close'])
         df_test_eval.reset_index(drop=True, inplace=True)
         return df_test_eval
 
@@ -32,8 +32,8 @@ class ModelEvaluation:
         # Add close prices
         df_train_eval['close'] = self.data_manager.df['close'][self.n_past:].reset_index(drop=True)
         # Slice DataFrame - Only Train set without validation part
-        index_start = int(self.data_manager.train_rows * 0)
-        index_end = int(self.data_manager.train_rows * (1 - self.val_size))
+        index_start = round(len(df_train_eval) * 0)
+        index_end = round((len(df_train_eval)) * (1 - self.val_size))
         df_train_eval = df_train_eval[index_start:index_end]
         df_train_eval.reset_index(drop=True, inplace=True)
         return df_train_eval
@@ -44,10 +44,11 @@ class ModelEvaluation:
                                    columns=['actual', 'prediction'])
         df_val_eval['close'] = self.data_manager.df['close'][self.n_past:].reset_index(drop=True)
         # Slice DataFrame - Only Validation set without train part
-        index_start = int(self.data_manager.train_rows * (1 - self.val_size))
-        index_end = int(self.data_manager.train_rows * 1)
+        index_start = round(len(df_val_eval) * (1 - self.val_size))
+        index_end = round((len(df_val_eval)) * 1)
         df_val_eval = df_val_eval[index_start:index_end]
         df_val_eval.reset_index(drop=True, inplace=True)
+        return df_val_eval
 
     # PREDICTION ACCURACY
     # OTHER
