@@ -20,13 +20,16 @@ class ModelEvaluation:
     # ------------------------------------------------------------------------------
     @staticmethod
     def create_test_eval_set(np_actual_test, np_prediction_test, np_close):
+        # TEST Dataframe for Evaluation
+        # Columns: Actual, Prediction, Close Price
         df_test_eval = pd.DataFrame(data=np.hstack((np_actual_test, np_prediction_test, np_close)),
                                     columns=['actual', 'prediction', 'close'])
         df_test_eval.reset_index(drop=True, inplace=True)
         return df_test_eval
 
     def create_train_eval_set(self, np_actual_train, np_predictions_train):
-        # TRAIN Dataframe for Evaluation - Close price, Actual / Prediction
+        # TRAIN Dataframe for Evaluation
+        # Columns: Actual, Prediction, Close Price
         df_train_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
                                      columns=['actual', 'prediction'])
         # Add close prices
@@ -39,7 +42,8 @@ class ModelEvaluation:
         return df_train_eval
 
     def create_val_eval_set(self, np_actual_train, np_predictions_train):
-        # VALIDATION Dataframe for Evaluation - Close price, Actual / Prediction
+        # VALIDATION Dataframe for Evaluation
+        # Columns: Actual, Prediction, Close Price
         df_val_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
                                    columns=['actual', 'prediction'])
         df_val_eval['close'] = self.data_manager.df['close'][self.n_past:].reset_index(drop=True)
