@@ -8,9 +8,9 @@ class DatasetManager(TechnicalIndicators):
     PACKAGE_FOLDER = os.path.abspath(os.path.dirname(__file__))
     DATASET_FOLDER = os.path.join(PACKAGE_FOLDER, 'datasets')
 
-    def __init__(self, symbols='USD/JPY', timeframe=None, postfix='12-16'):
+    def __init__(self, symbol='USD/JPY', timeframe=None, postfix='12-16'):
         TechnicalIndicators.__init__(self)
-        self.symbol = symbols.upper()
+        self.symbol = symbol.upper()
         self.symbol_arr = self.symbol.lower().split('/')
         self.symbol_slug = self.symbol_arr[0] + self.symbol_arr[1]
         self.postfix = postfix
@@ -82,10 +82,10 @@ class DatasetManager(TechnicalIndicators):
                 pass
             elif ('EWMA' in indicator) | ('EMA' in indicator) | ('SMA' in indicator):
                 if indicator not in self.mean_indicators:
-                    self.mean_indicators.add(indicator)
+                    self.mean_indicators.append(indicator)
             else:
                 if indicator not in self.indicators:
-                    self.indicators.add(indicator)
+                    self.indicators.append(indicator)
 
     # Change borders of dataset
     def restrict(self, from_date, to_date=None):
