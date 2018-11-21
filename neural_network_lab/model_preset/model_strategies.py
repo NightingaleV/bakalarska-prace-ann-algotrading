@@ -5,6 +5,7 @@ import pandas as pd
 # Visualization
 import matplotlib.pyplot as plt
 import seaborn as sns
+# Custom
 from .model_evaluation import ModelEvaluation
 
 
@@ -91,7 +92,7 @@ class ModelStrategies(ModelEvaluation):
         sharpe = self.calc_sharpe_ratio(df, 'pip_ret')
         # Calc Win rate
         winrate = self.calc_win_rate(df, 'cum_pip_ret')
-        # Calc Drawdown
+        # Calc Drawdown - TIME CONSUMING
         max_drawdown = 0
         if calc_drawdown:
             max_drawdown, max_drawdown_pct, duration = self.calc_drawdown(df, 'cum_pip_ret')

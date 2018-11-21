@@ -5,14 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 # Building Neural Network
-from keras.models import Sequential
-from keras.layers import Dense, Dropout
-from keras.layers import BatchNormalization, Flatten
-from keras.layers.advanced_activations import LeakyReLU, ELU
-from keras import metrics
-from keras.optimizers import Adam
-from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
-
 from keras.layers import Dense, Activation, Dropout
 from keras.layers import BatchNormalization, Flatten
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard

@@ -4,9 +4,9 @@ from keras.layers import Dense, Activation
 from keras import regularizers
 from keras import backend as K
 # CUSTOM
-from neural_lab.model_builder import ModelBuilder
-from neural_lab.model_evaluation import ModelEvaluation
-from neural_lab.model_strategies import ModelStrategies
+from .model_preset.model_builder import ModelBuilder
+from .model_preset.model_evaluation import ModelEvaluation
+from .model_preset.model_strategies import ModelStrategies
 
 
 class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
