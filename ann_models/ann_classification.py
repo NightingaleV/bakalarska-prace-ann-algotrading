@@ -1,7 +1,6 @@
 # KERAS
-from keras import metrics
 from keras.models import Sequential
-from keras.layers import Dense, Activation, Dropout
+from keras.layers import Dense, Activation
 from keras import regularizers
 # CUSTOM
 from neural_lab.model_preset import ModelPreset
@@ -9,7 +8,7 @@ from neural_lab.model_preset import ModelPreset
 
 class NeuralNetworkModel(ModelPreset):
 
-    def __init__(self):
+    def __init__(self, model_name='model_ann'):
         # Inherit Model Preset
         super(NeuralNetworkModel).__init__()
 
@@ -17,7 +16,7 @@ class NeuralNetworkModel(ModelPreset):
         self.n_future: int = 3
 
         # GENERAL
-        self.model_name: str = 'model_ann'
+        self.model_name: str = model_name
         self.val_size: float = 0.15
         self.test_size: float = 0.2
 
