@@ -10,11 +10,12 @@ from .model_preset.model_strategies import ModelStrategies
 
 
 class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
+    models_folder = 'iteration_20_11_2018'
 
     def __init__(self, data_manager):
         # Inherit Model Preset
         super(ModelNeuralNetwork, self).__init__(data_manager)
-        print('Initialize ModelNeuralNetwork')
+        print('Initialize NeuralNetworkSetup')
 
         # GENERAL
         self.model_task: str = 'classification'
@@ -31,12 +32,11 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
         # PROPERTIES
         self.neurons_hidden: int = 25
         self.neurons_output: int = 1
-        self.epochs: int = 100
+        self.epochs: int = 300
         self.loss_func: str = 'binary_crossentropy'
         self.activation_func: str = 'tanh'
         self.output_func: str = 'sigmoid'
-        self.batch_size: int = 32
-        self.optimizer: str = 'Adam'
+        self.batch_size: int = 64
         self.starting_learn_rate: float = 0.01
 
         # BEHAVIORS

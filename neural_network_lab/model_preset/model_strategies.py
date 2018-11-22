@@ -14,7 +14,7 @@ class ModelStrategies(ModelEvaluation):
 
     def __init__(self, data_manager):
         super(ModelStrategies, self).__init__(data_manager)
-        print('Initialize ModelStrategies')
+        print('Initialize Model Strategies')
         self.pip: float = 0.
         self.set_pip_size()
 

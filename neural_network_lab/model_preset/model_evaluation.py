@@ -9,7 +9,7 @@ class ModelEvaluation(ModelBuilder):
 
     def __init__(self, data_manager):
         super(ModelEvaluation, self).__init__()
-        print('Initialize ModelStrategies')
+        print('Initialize Model Evaluation')
         # Calculated by DataManager in test_train_split
         self.data_manager = data_manager
 

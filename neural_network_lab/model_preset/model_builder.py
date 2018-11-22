@@ -20,7 +20,7 @@ class ModelBuilder:
     models_folder = 'trained_models'
 
     def __init__(self):
-        print('Initialize ModelBuilder')
+        print('Initialize Model Builder')
         # MODELS
         self.compiled_model = None
         self.trained_model = None
