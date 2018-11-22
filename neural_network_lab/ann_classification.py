@@ -15,7 +15,7 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
     def __init__(self, data_manager):
         # Inherit Model Preset
         super(ModelNeuralNetwork, self).__init__(data_manager)
-        print('Initialize NeuralNetworkSetup')
+        print('Initialize Neural Network Setup')
 
         # GENERAL
         self.model_task: str = 'classification'

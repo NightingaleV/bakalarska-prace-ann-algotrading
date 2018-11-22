@@ -259,7 +259,7 @@ class ModelStrategies(ModelEvaluation):
     # ------------------------------------------------------------------------------
     # Line Chart - X: Thresholds & Y: Return in Pips
     def plot_threshold_optimization(self, dataset, plot_name: str = 'threshold_optimization',
-                                    title: str = 'Threshold Optimization'):
+                                    title: str = 'Threshold Optimization', show=True):
         """
         dataset = Dataset with results of Strategy Optimization
         """
@@ -270,14 +270,15 @@ class ModelStrategies(ModelEvaluation):
         plt.title(title)
         plt.ylabel('Pip Return')
         plt.xlabel('Threshold')
-        plt.savefig(f'trained_models/{self.model_name}/{plot_name}.png', bbox_inches='tight',
+        plt.savefig(f'{self.models_folder}/{self.model_name}/{plot_name}.png', bbox_inches='tight',
                     dpi=150)
-        return plt.show()
+        if show:
+            return plt.show()
 
     # Subplots of Close price & Cumulative returns
     def plot_cumulative_returns(self, dataset,
                                 plot_name: str='',
-                                title: str = 'Close Price / Cumulative Returns'):
+                                title: str = 'Close Price / Cumulative Returns', show=True):
         """
         dataset = Dataset with results of Strategy Calculation
         """
@@ -295,6 +296,7 @@ class ModelStrategies(ModelEvaluation):
         plt.ylabel('Pip Returns')
         plt.legend(['returns in pip'], loc='lower right')
         # Save plot
-        plt.savefig('trained_models/{}/{}.png'.format(self.model_name, plot_name),
+        plt.savefig(f'{self.models_folder}/{self.model_name}/{plot_name}.png',
                     bbox_inches='tight', dpi=150)
-        return plt.show()
+        if show:
+            return plt.show()

@@ -218,7 +218,7 @@ class ModelBuilder:
 
     # VISUALIZE TRAINING
     # ------------------------------------------------------------------------------
-    def plot_training_loss(self):
+    def plot_training_loss(self, show=True):
         sns.set()
         plt.plot(self.training_history.history['loss'])
         plt.plot(self.training_history.history['val_loss'])
@@ -231,9 +231,10 @@ class ModelBuilder:
         plt.legend(['train', 'validation'], loc='upper right')
         plt.savefig(f'{self.models_folder}/{self.model_name}/training_error.png',
                     bbox_inches='tight', dpi=150)
-        return plt.show()
+        if show:
+            return plt.show()
 
-    def plot_training_metric(self):
+    def plot_training_metric(self, show=True):
         sns.set()
         plt.plot(self.training_history.history[self.monitor_metric])
         plt.plot(self.training_history.history[self.val_monitor_metric])
@@ -243,7 +244,8 @@ class ModelBuilder:
         plt.legend(['train', 'validation'], loc='lower right')
         plt.savefig(f'{self.models_folder}/{self.model_name}/training_accuracy.png',
                     bbox_inches='tight', dpi=150)
-        return plt.show()
+        if show:
+            return plt.show()
 
     # OTHER
     # ------------------------------------------------------------------------------

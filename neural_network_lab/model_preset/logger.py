@@ -63,8 +63,7 @@ Hidden Neurons: {self.model.neurons_hidden} / Output Neurons: {self.model.neuron
 Epochs: {self.model.epochs}
 Cost function: {self.model.loss_func}
 Activation function: {self.model.activation_func}, Output function: {self.model.output_func}
-Batch_size: {self.model.batch_size}, Optimizer: {self.model.optimizer} - LR = {
-self.model.starting_learn_rate}
+Batch_size: {self.model.batch_size}, Optimizer: Adam - LR = {self.model.starting_learn_rate}
 
 # BEHAVIORS
 Shuffle Inputs:      {self.model.shuffle_inputs} 
