@@ -127,9 +127,9 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # --------------------------------------------------------------------------
     trained_model, training_history = model.train_network(x_train, y_train)
     # Plot Training Progress of Error
-    model.plot_training_loss()
+    model.plot_training_loss(show=False)
     # Plot Training Progress of Accuracy
-    model.plot_training_metric()
+    model.plot_training_metric(show=False)
 
     # MAKE PREDICTION
     # --------------------------------------------------------------------------
@@ -177,7 +177,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE threshold parameter of the best strategy
     model.set_pred_best_threshold(df_strategies)
     # PLOT threshold optimization
-    model.plot_threshold_optimization(df_strategies, plot_name='threshold_nn_pred_optimization')
+    model.plot_threshold_optimization(df_strategies, plot_name='threshold_nn_pred_optimization',
+                                      show=False)
     # MACD Strategy optimization
     strategies = []
     for threshold in np.linspace(0, 0.45, 61):
@@ -198,7 +199,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE threshold parameter of the best strategy
     model.set_macd_best_threshold(df_strategies)
     # PLOT threshold optimization
-    model.plot_threshold_optimization(df_strategies, 'threshold_macd_optimization')
+    model.plot_threshold_optimization(df_strategies, 'threshold_macd_optimization', show=False)
 
     # TRADING STRATEGIES EVALUATION
     # --------------------------------------------------------------------------
@@ -215,7 +216,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'nn_pred_test_returns')
+    model.plot_cumulative_returns(df_eval, 'nn_pred_test_returns', show=False)
     # SAVE to parameters for Logger
     strategy_dict = model.prediction_strategy(df=df_test_eval.copy(), origin=0.5,
                                               threshold=model.nn_pred_strategy_best_threshold,
@@ -231,7 +232,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'macd_test_returns')
+    model.plot_cumulative_returns(df_eval, 'macd_test_returns', show=False)
     # SAVE to parameters for Logger
     strategy_dict = model.macd_strategy(df=df_test_eval.copy(), origin=0.5,
                                         threshold=model.macd_strategy_best_threshold, form='dict')
@@ -248,7 +249,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'nn_pred_train_returns')
+    model.plot_cumulative_returns(df_eval, 'nn_pred_train_returns', show=False)
     # SAVE to parameters for Logger
     model.nn_pred_train_pip_return = model.get_cumulative_pip_return(df_eval)
 
@@ -261,7 +262,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'macd_train_returns')
+    model.plot_cumulative_returns(df_eval, 'macd_train_returns', show=False)
     # SAVE to parameters for Logger
     model.macd_strategy_train_pip_return = model.get_cumulative_pip_return(df_eval)
 
@@ -276,7 +277,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'nn_pred_val_returns')
+    model.plot_cumulative_returns(df_eval, 'nn_pred_val_returns', show=False)
     # SAVE to parameters for Logger
     model.nn_pred_val_pip_return = model.get_cumulative_pip_return(df_eval)
 
@@ -289,7 +290,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # SAVE to list of strategies
     best_strategies_evaluations.append(strategy)
     # PLOT Returns
-    model.plot_cumulative_returns(df_eval, 'macd_val_returns')
+    model.plot_cumulative_returns(df_eval, 'macd_val_returns', show=False)
     # SAVE to parameters for Logger
     model.macd_strategy_val_pip_return = model.get_cumulative_pip_return(df_eval)
 
