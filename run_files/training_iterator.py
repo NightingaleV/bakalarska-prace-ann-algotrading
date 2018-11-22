@@ -308,3 +308,60 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # Log Model Parameters
     logger.log_model_info()
 
+    # SAVE ITERATION INFORMATION
+    # ------------------------------------------------------------------------------
+    iteration_variables = [moving_average, model.n_past, model.n_future]
+    model_score = [model.train_score, model.val_score, model.test_score]
+    model_prediction_strategy = [model.nn_pred_strategy_best_threshold,
+                                 model.nn_pred_strategy_pip_return,
+                                 model.nn_pred_strategy_fees,
+                                 model.nn_pred_strategy_sharpe,
+                                 model.nn_pred_strategy_max_drawdown,
+                                 model.nn_pred_strategy_win_pct,
+                                 model.nn_pred_train_pip_return,
+                                 model.nn_pred_val_pip_return]
+    model_macd_strategy = [model.macd_strategy_best_threshold,
+                           model.macd_strategy_pip_return,
+                           model.macd_strategy_fees,
+                           model.macd_strategy_sharpe,
+                           model.macd_strategy_max_drawdown,
+                           model.macd_strategy_win_pct,
+                           model.macd_strategy_train_pip_return,
+                           model.macd_strategy_val_pip_return]
+
+    model_info = iteration_variables + model_score, model_prediction_strategy, model_macd_strategy
+    models_evaluations.append(model_info)
+    # Del Main Variables
+    del (model, classifier, df_eval, best_strategies_evaluations)
+
+    # END OF CYCLE
+    # ------------------------------------------------------------------------------
+
+# EXPORT RESULTS OF ITERATIONS
+# ------------------------------------------------------------------------------
+iteration_variables_labels = ['MA', 'n_past', 'n_future']
+model_score_labels = ['Train Acc', 'Val Acc', 'Test Acc']
+model_prediction_strategy_labels = ['Pred Threshold',
+                                    'Pred Pip Return',
+                                    'Pred Fees',
+                                    'Pred Sharpe',
+                                    'Pred Drawdown',
+                                    'Pred Winrate',
+                                    'Pred Train Ret',
+                                    'Pred Val Ret', ]
+model_macd_strategy_labels = ['MACD Threshold',
+                              'MACD Pip Return',
+                              'MACD Fees',
+                              'MACD Sharpe',
+                              'MACD Drawdown',
+                              'MACD Winrate',
+                              'MACD Train Ret',
+                              'MACD Val Ret',
+                              ]
+
+labels = iteration_variables_labels + model_score_labels + model_prediction_strategy_labels \
+         + model_macd_strategy_labels
+
+df_iterations = pd.DataFrame(data=models_evaluations, columns=labels)
+df_iterations.to_csv(f'{ModelNeuralNetwork.models_folder}/models_evaluations.csv',
+                     encoding='utf-8', index=False)
