@@ -8,6 +8,9 @@ import seaborn as sns
 from keras.layers import Dense, Activation, Dropout
 from keras.layers import BatchNormalization, Flatten
 from keras.callbacks import EarlyStopping, ReduceLROnPlateau, ModelCheckpoint, TensorBoard
+from keras.optimizers import Adam
+
+
 # Custom
 # from .model_strategies import ModelStrategies
 # from .model_evaluation import ModelEvaluation
@@ -38,7 +41,6 @@ class ModelBuilder:
         self.activation_func: str = 'tanh'
         self.output_func: str = 'sigmoid'
         self.batch_size: int = 32
-        self.optimizer: str = 'Adam'
         self.starting_learn_rate: float = 0.01
 
         # BEHAVIORS
@@ -102,8 +104,9 @@ class ModelBuilder:
         # Build model
 
         # Compile model
+        optimizer = Adam(lr=self.starting_learn_rate)
         self.compiled_model.compile(
-            optimizer=eval(f'{self.optimizer}(lr={self.starting_learn_rate})'),
+            optimizer=optimizer,
             loss=self.loss_func,
             metrics=[self.monitor_metric])
         print('Neural Network successfully compiled')
@@ -249,7 +252,6 @@ class ModelBuilder:
         # Dir to save results
         if not os.path.exists(f'{cls.models_folder}/{name}'):
             os.makedirs(f'{cls.models_folder}/{name}')
-
 
 # class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
 #
