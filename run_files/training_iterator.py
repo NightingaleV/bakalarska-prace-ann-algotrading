@@ -64,7 +64,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.model_task: str = 'classification'
     model.model_postfix: str = iteration_postfix
     
-    model.reset_model_name()
+    model.set_model_name()
     logger.set_model(model)
 
     # INDICATORS
