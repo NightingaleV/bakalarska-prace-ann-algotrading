@@ -63,7 +63,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.n_future: int = periods[1]
     model.model_task: str = 'classification'
     model.model_postfix: str = iteration_postfix
-
+    
+    model.reset_model_name()
     logger.set_model(model)
 
     # INDICATORS
@@ -330,7 +331,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
                            model.macd_strategy_train_pip_return,
                            model.macd_strategy_val_pip_return]
 
-    model_info = iteration_variables + model_score, model_prediction_strategy, model_macd_strategy
+    model_info = iteration_variables + model_score + model_prediction_strategy + model_macd_strategy
     models_evaluations.append(model_info)
     # Del Main Variables
     del (model, classifier, df_eval, best_strategies_evaluations)
