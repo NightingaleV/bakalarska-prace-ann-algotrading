@@ -233,6 +233,9 @@ class ModelBuilder:
                     bbox_inches='tight', dpi=150)
         if show:
             return plt.show()
+        else:
+            plt.show(block=False)
+            return plt.close()
 
     def plot_training_metric(self, show=True):
         sns.set()
@@ -246,6 +249,9 @@ class ModelBuilder:
                     bbox_inches='tight', dpi=150)
         if show:
             return plt.show()
+        else:
+            plt.show(block=False)
+            return plt.close()
 
     # OTHER
     # ------------------------------------------------------------------------------

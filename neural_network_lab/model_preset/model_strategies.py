@@ -274,6 +274,9 @@ class ModelStrategies(ModelEvaluation):
                     dpi=150)
         if show:
             return plt.show()
+        else:
+            plt.show(block=False)
+            return plt.close()
 
     # Subplots of Close price & Cumulative returns
     def plot_cumulative_returns(self, dataset,
@@ -300,3 +303,6 @@ class ModelStrategies(ModelEvaluation):
                     bbox_inches='tight', dpi=150)
         if show:
             return plt.show()
+        else:
+            plt.show(block=False)
+            return plt.close()

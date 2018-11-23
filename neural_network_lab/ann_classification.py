@@ -56,7 +56,7 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
         self.val_monitor_metric: str = 'val_' + self.monitor_metric
 
         # Set custom model name
-        self.set_model_name()
+        self.reset_model_name()
 
     def build_network(self):
         # Clear Tensors, for iteration purpose
@@ -94,7 +94,7 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
         # COMPILE MODEL
         super(ModelNeuralNetwork, self).build_network()
 
-    def set_model_name(self):
+    def reset_model_name(self):
         self.model_name = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
                           f'{self.data_manager.postfix}' \
                           f'_MA{self.predict_ma}' \
