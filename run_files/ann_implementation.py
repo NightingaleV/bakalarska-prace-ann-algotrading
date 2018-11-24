@@ -31,11 +31,11 @@ df = dm.df
 # IMPORT NEURAL NETWORK
 # ------------------------------------------------------------------------------
 model = ModelNeuralNetwork(data_manager=dm)
-model.predict_ma: int = 30
-model.n_past: int = 25
-model.n_future: int = 5
+model.predict_ma: int = 40
+model.n_past: int = 50
+model.n_future: int = 10
 model.model_task: str = 'classification'
-model.model_postfix: str = ''
+model.model_postfix: str = 'test_spyder'
 
 # Logger
 # ------------------------------------------------------------------------------

@@ -10,7 +10,8 @@ from .model_preset.model_strategies import ModelStrategies
 
 
 class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
-    models_folder = 'iteration_20_11_2018'
+    # TODO beru tuto slozku misto setnute v iteratoru, mozna pridat setter
+    _models_folder = 'models_folder'
 
     def __init__(self, data_manager):
         # Inherit Model Preset
@@ -20,12 +21,12 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
         # GENERAL
         self.model_task: str = 'classification'
         self.model_postfix: str = ''
-        self.model_name: str = 'model_name'
+        # self._model_name = reimplemented down there
         self.val_size: float = 0.15
         self.test_size: float = 0.2
 
         # PREDICTION PERIODS
-        self.predict_ma: int = 30
+        self._predict_ma: int = 30
         self.n_past: int = 10
         self.n_future: int = 3
 
@@ -56,7 +57,15 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
         self.val_monitor_metric: str = 'val_' + self.monitor_metric
 
         # Set custom model name
-        self.set_model_name()
+
+    # Reimplemented  custom models name
+    @property
+    def model_name(self):
+        self._model_name = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
+                             f'{self.data_manager.postfix}' \
+                             f'_MA{self._predict_ma}' \
+                             f'_past{self.n_past}_fut{self.n_future}_{self.model_postfix}'
+        return self._model_name
 
     def build_network(self):
         # Clear Tensors, for iteration purpose
@@ -93,9 +102,3 @@ class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
                                       kernel_initializer='uniform'))
         # COMPILE MODEL
         super(ModelNeuralNetwork, self).build_network()
-
-    def set_model_name(self):
-        self.model_name = f'{self.model_task}_{self.data_manager.symbol_slug}_' \
-                          f'{self.data_manager.postfix}' \
-                          f'_MA{self.predict_ma}' \
-                          f'_past{self.n_past}_fut{self.n_future}_{self.model_postfix}'

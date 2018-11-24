@@ -17,21 +17,24 @@ from keras.optimizers import Adam
 
 
 class ModelBuilder:
-    models_folder = 'trained_models'
+    _models_folder = 'trained_models'
 
     def __init__(self):
         print('Initialize Model Builder')
         # MODELS
+
+        self._model_name = None
         self.compiled_model = None
         self.trained_model = None
         self.training_history = None
         self.vector_shape = 0
 
         # GENERAL
-        self.model_name: str = 'model_ann'
+        self._model_name = None
         self.val_size: float = 0.5
 
         # PREDICTION PERIODS
+        self._predict_ma: int = 30
         self.n_past: int = 10
         self.n_future: int = 3
 
@@ -61,6 +64,30 @@ class ModelBuilder:
         self.train_score: float = 0.
         self.val_score: float = 0.
         self.val_score_max_in_epoch: int = 0
+
+    @property
+    def models_folder(self):
+        return self._models_folder
+
+    @models_folder.setter
+    def models_folder(self, value):
+        self._models_folder = value
+
+    @property
+    def model_name(self):
+        return self._model_name
+
+    @model_name.setter
+    def model_name(self, value):
+        self._model_name = value
+
+    @property
+    def predict_ma(self):
+        return self._predict_ma
+
+    @predict_ma.setter
+    def predict_ma(self, value):
+        self._predict_ma = value
 
     # MODEL WORKFLOW
     # ------------------------------------------------------------------------------
@@ -255,11 +282,12 @@ class ModelBuilder:
 
     # OTHER
     # ------------------------------------------------------------------------------
-    @classmethod
-    def create_folder(cls, name):
+    def create_folder(self, name):
         # Dir to save results
-        if not os.path.exists(f'{cls.models_folder}/{name}'):
-            os.makedirs(f'{cls.models_folder}/{name}')
+        print(f'Inside {self.models_folder} create {name}')
+        if not os.path.exists('{}/{}'.format(self.models_folder, name)):
+            os.makedirs('{}/{}'.format(str(self.models_folder), name))
+
 
 # class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
 #

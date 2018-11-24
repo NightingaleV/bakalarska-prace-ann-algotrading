@@ -70,7 +70,9 @@ class ModelEvaluation(ModelBuilder):
         directions = dataset['same_slope'].value_counts()
         # Percentage of positive values
         acc = (directions.iloc[0] / (directions.sum())) * 100
-        return acc.round(2)
+        acc = acc.round(2)
+        print(f'Models Accuracy on the Test set is: {acc} %')
+        return acc
 
     # ROOT MEAN SQUARED ERROR
     @staticmethod
