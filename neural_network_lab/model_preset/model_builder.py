@@ -284,14 +284,6 @@ class ModelBuilder:
     # ------------------------------------------------------------------------------
     def create_folder(self, name):
         # Dir to save results
-        print(f'Inside {self.models_folder} create {name}')
         if not os.path.exists('{}/{}'.format(self.models_folder, name)):
+            print(f'Inside {self.models_folder} create folder {name}')
             os.makedirs('{}/{}'.format(str(self.models_folder), name))
-
-
-# class ModelPreset(ModelBuilder, ModelEvaluation, ModelStrategies):
-#
-#     def __init__(self, data_manager=None):
-#         super(ModelPreset, self).__init__()
-#         print('Initialize ModelPreset')
-#
