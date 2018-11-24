@@ -24,9 +24,11 @@ class Logger:
         formatter = logging.Formatter('%(message)s')
         self.file_handler.setFormatter(formatter)
         self.logger.addHandler(self.file_handler)
+        print('Model was synchronized with Logger')
 
     def set_data_manager(self, data_manager):
         self.dm = data_manager
+        print('Data Manager was synchronized with Logger')
 
     def delete_handler(self):
         log = self.logger

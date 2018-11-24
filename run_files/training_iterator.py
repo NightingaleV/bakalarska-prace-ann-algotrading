@@ -62,7 +62,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.n_past: int = periods[0]
     model.n_future: int = periods[1]
     model.model_task: str = 'classification'
-    model.models_folder: str = 'iteration_24_11_2018'
+    model.models_folder: str = 'iteration_test'
     model.model_postfix: str = iteration_postfix
     
     logger.set_model(model)
@@ -83,7 +83,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
         dm.ewma(60)
     dm.rsi_indicator(25)
     dm.stochastic_oscilator(25, 3, 3)
-    dm.get_indicators(target=model.model_task)
+    dm.set_indicators(target=model.model_task)
 
     # Derived Quantities
     dm.df['past_price_regression'] = dm.df[dm.mean_indicators[0]] / dm.df[
@@ -108,7 +108,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     dm.df.drop(['%d', 'past_price_regression', 'future_price_regression'], axis=1, inplace=True)
     dm.df = dm.df.iloc[30:-5]
     dm.df.reset_index(drop=True, inplace=True)
-    dm.get_indicators(target=model.model_task)
+    dm.set_indicators(target=model.model_task)
 
     # SPLIT Train/Test/Test(close price)
     df_train, df_test, df_test_close = dm.test_train_split(model)
@@ -162,7 +162,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # --------------------------------------------------------------------------
     # NN Trading Threshold Optimization on TRAIN Set
     strategies = []
-    for threshold in np.linspace(0, 0.45, 61):
+    # for threshold in np.linspace(0, 0.45, 61):
+    for threshold in np.linspace(.2, .45, 41):
         df_eval = df_train_eval.copy()
         # Calc without drawdown, it is very time consuming
         strategy = model.prediction_strategy(df_eval, origin=0.5, threshold=threshold,
@@ -182,7 +183,8 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
                                       show=False)
     # MACD Strategy optimization
     strategies = []
-    for threshold in np.linspace(0, 0.45, 61):
+    # for threshold in np.linspace(0, 0.45, 61):
+    for threshold in np.linspace(.2, .45, 41):
         df_eval = df_train_eval.copy()
         # Calc without drawdown, it is very time consuming
         strategy = model.macd_strategy(df_eval, origin=0.5, threshold=threshold,

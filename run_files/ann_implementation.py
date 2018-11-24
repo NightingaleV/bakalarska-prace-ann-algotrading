@@ -37,7 +37,7 @@ model.n_future: int = 10
 model.model_task: str = 'classification'
 model.model_postfix: str = 'test_spyder'
 
-# Logger
+# LOGGER
 # ------------------------------------------------------------------------------
 logger = Logger()
 logger.set_model(model)
@@ -52,7 +52,7 @@ dm.ewma(20)
 dm.ewma(40)
 dm.rsi_indicator(25)
 dm.stochastic_oscilator(25, 3, 3)
-dm.get_indicators(target=model.model_task)
+dm.set_indicators(target=model.model_task)
 
 # Derived Quantities
 dm.df['past_price_regression'] = dm.df[dm.mean_indicators[0]] / dm.df[dm.mean_indicators[0]].shift(
@@ -75,7 +75,7 @@ dm.df.drop(['%d', 'past_price_regression', 'future_price_regression'], axis=1, i
 # dm.df.drop(model.mean_indicators, axis=1, inplace=True)
 dm.df = dm.df.iloc[30:-5]
 dm.df.reset_index(drop=True, inplace=True)
-dm.get_indicators(target=model.model_task)
+dm.set_indicators(target=model.model_task)
 df = dm.df
 
 # Test/Train split
@@ -87,7 +87,8 @@ scaler = StandardScaler()
 scaled_df_train = scaler.fit_transform(df_train[dm.mean_indicators + dm.indicators])
 scaled_df_test = scaler.transform(df_test[dm.mean_indicators + dm.indicators])
 
-# Create input vectors
+# CREATE INPUT VECTORS
+# ------------------------------------------------------------------------------
 x_train, y_train = model.create_train_vectors(df_train, scaled_df_train)
 x_test, y_test, y_test_price = model.create_test_vectors(df_test, scaled_df_test, df_test_close)
 
@@ -99,7 +100,7 @@ model.plot_training_loss()
 # Plot Training Progress of Accuracy
 model.plot_training_metric()
 
-del (currency_pair, data_postfix, mean_average, nb_dir, time_frame)
+del (currency_pair, data_postfix, nb_dir, time_frame)
 
 # MAKE PREDICTION
 # ------------------------------------------------------------------------------

@@ -147,6 +147,7 @@ class ModelBuilder:
             filepath=f'{self.models_folder}/{self.model_name}/{self.model_name}.hdf5',
             by_name=False)
         print('Weights successfully imported')
+        print('Model is ready to predict.')
         return self.trained_model
 
     # Compile model + retrain model
@@ -200,7 +201,7 @@ class ModelBuilder:
 
         # Round Score Metrics
         self.round_score_values()
-
+        print('Model was successfully trained.')
         return self.trained_model, self.training_history
 
     def set_score_values(self):

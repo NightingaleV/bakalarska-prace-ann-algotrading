@@ -79,7 +79,7 @@ class DatasetManager(TechnicalIndicators):
         self.df = self.df_copy.copy()
 
     # Get List of used indicators
-    def get_indicators(self, target='classification'):
+    def set_indicators(self, target='classification'):
         self.indicators = []
         self.mean_indicators = []
         forbidden = ['open', 'high', 'close', 'low', 'volume']
