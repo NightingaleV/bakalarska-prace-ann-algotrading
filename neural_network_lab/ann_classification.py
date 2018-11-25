@@ -10,8 +10,7 @@ from .model_preset.model_strategies import ModelStrategies
 
 
 class ModelNeuralNetwork(ModelStrategies, ModelEvaluation, ModelBuilder):
-    # TODO beru tuto slozku misto setnute v iteratoru, mozna pridat setter
-    _models_folder = 'models_folder'
+    _models_folder = 'trained_models'
 
     def __init__(self, data_manager):
         # Inherit Model Preset
