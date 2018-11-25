@@ -62,7 +62,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.n_past: int = periods[0]
     model.n_future: int = periods[1]
     model.model_task: str = 'classification'
-    model.models_folder: str = 'iteration_test'
+    model.models_folder: str = 'iteration_03'
     model.model_postfix: str = iteration_postfix
     
     logger.set_model(model)
@@ -102,7 +102,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     dm.df[model.model_task] = np.where(dm.df['future_price_regression'] > 1, 1, 0)
 
     # For training without EMAs
-    # dm.df.drop(dm.mean_indicators, axis=1, inplace=True)
+    dm.df.drop(dm.mean_indicators, axis=1, inplace=True)
     # Drop unnecessary values
     dm.df.drop(['low', 'high', 'open'], axis=1, inplace=True)
     dm.df.drop(['%d', 'past_price_regression', 'future_price_regression'], axis=1, inplace=True)
@@ -163,7 +163,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # NN Trading Threshold Optimization on TRAIN Set
     strategies = []
     # for threshold in np.linspace(0, 0.45, 61):
-    for threshold in np.linspace(.2, .45, 41):
+    for threshold in np.linspace(0, .45, 61):
         df_eval = df_train_eval.copy()
         # Calc without drawdown, it is very time consuming
         strategy = model.prediction_strategy(df_eval, origin=0.5, threshold=threshold,
@@ -184,7 +184,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     # MACD Strategy optimization
     strategies = []
     # for threshold in np.linspace(0, 0.45, 61):
-    for threshold in np.linspace(.2, .45, 41):
+    for threshold in np.linspace(0, .45, 61):
         df_eval = df_train_eval.copy()
         # Calc without drawdown, it is very time consuming
         strategy = model.macd_strategy(df_eval, origin=0.5, threshold=threshold,
@@ -369,3 +369,4 @@ labels = iteration_variables_labels + model_score_labels + model_prediction_stra
 df_iterations = pd.DataFrame(data=models_evaluations, columns=labels)
 df_iterations.to_csv(f'{ModelNeuralNetwork.models_folder}/models_evaluations.csv',
                      encoding='utf-8', index=False)
+
