@@ -6,6 +6,7 @@ import sys
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
+
 # Custom Packages
 nb_dir = os.path.split(os.getcwd())[0]
 if nb_dir not in sys.path:
@@ -15,7 +16,6 @@ from neural_network_lab.model_preset.logger import Logger
 
 # Import Your Model Setup
 from neural_network_lab.ann_classification import ModelNeuralNetwork
-
 
 # INITIALIZE DATASET
 # ------------------------------------------------------------------------------
@@ -31,25 +31,27 @@ df = dm.df
 # IMPORT NEURAL NETWORK
 # ------------------------------------------------------------------------------
 model = ModelNeuralNetwork(data_manager=dm)
+model.models_folder = 'trained_models'
 model.predict_ma: int = 40
-model.n_past: int = 50
-model.n_future: int = 10
+model.n_past: int = 10
+model.n_future: int = 3
 model.model_task: str = 'classification'
-model.model_postfix: str = 'test_spyder'
-
-# LOGGER
-# ------------------------------------------------------------------------------
-logger = Logger()
-logger.set_model(model)
-logger.set_data_manager(dm)
+model.model_postfix: str = ''
 
 # INDICATORS
 # ------------------------------------------------------------------------------
 dm.restore_df()
 dm.ewma(model.predict_ma)
-dm.ewma(16)
-dm.ewma(20)
-dm.ewma(40)
+if model.predict_ma != 15:
+    dm.ewma(15)
+if model.predict_ma != 20:
+    dm.ewma(20)
+if model.predict_ma != 30:
+    dm.ewma(30)
+if model.predict_ma != 40:
+    dm.ewma(40)
+if model.predict_ma != 60:
+    dm.ewma(60)
 dm.rsi_indicator(25)
 dm.stochastic_oscilator(25, 3, 3)
 dm.set_indicators(target=model.model_task)
@@ -125,8 +127,22 @@ df_test_eval = model.create_test_eval_set(actual_test, predictions_test, y_test_
 
 # ACCURACY EVALUATION
 # ------------------------------------------------------------------------------
-model.test_score = model.calc_acc(df_train_eval.copy(), origin=0.5, actual_col='actual',
+model.test_score = model.calc_acc(df_test_eval.copy(), origin=0.5, actual_col='actual',
                                   prediction_col='prediction')
+
+# CONFUSION MATRIX - Test set
+from sklearn.metrics import confusion_matrix
+confusion_matrix(actual_test,predictions_test.round())
+
+# EVALUATION REPORT - Train set
+from sklearn.metrics import classification_report
+
+print(classification_report(actual_train, predictions_train.round()))
+
+# EVALUATION REPORT - Test set
+from sklearn.metrics import classification_report
+
+print(classification_report(actual_test, predictions_test.round()))
 
 # TRADING STRATEGIES OPTIMIZATION
 # ------------------------------------------------------------------------------
@@ -260,5 +276,11 @@ df_strategies_eval.to_csv(
     f'{model.models_folder}/{model.model_name}/best_strategies_evaluation.csv',
     encoding='utf-8', index=False)
 
-# LOG MODEL PARAMETERS
+# LOGGER
+# ------------------------------------------------------------------------------
+# Init logger
+logger = Logger()
+logger.set_model(model)
+logger.set_data_manager(dm)
+# Log model parameters
 logger.log_model_info()

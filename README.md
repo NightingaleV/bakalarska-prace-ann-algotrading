@@ -15,7 +15,7 @@ Pokud Vás zajímá proces implementace, ale nechce se Vám instalovat package l
 připraven průvodce v podobě jupyter notebooku mapující workflow a funkcionalitu práce.
 - [**Průvodce implementací - ONLINE**](https://github.com/NightingaleV/bakalarska-prace-ann-algotrading/blob/master/interface/Workflow_Guide.ipynb)
 
-## Struktura
+## Struktura projektu
 ### Interface
 - `Workflow_Guide.ipynb` - Jupyter Notebook vysvětlující implementaci trénování modelu a 
 obchodních strategií
