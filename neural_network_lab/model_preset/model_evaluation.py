@@ -23,19 +23,31 @@ class ModelEvaluation(ModelBuilder):
     # CREATE SETs FOR EVALUATION
     # ------------------------------------------------------------------------------
     @staticmethod
-    def create_test_eval_set(np_actual_test, np_prediction_test, np_close):
+    def create_test_eval_set(np_actual_test, np_prediction_test=None, np_close=None):
         # TEST Dataframe for Evaluation
         # Columns: Actual, Prediction, Close Price
-        df_test_eval = pd.DataFrame(data=np.hstack((np_actual_test, np_prediction_test, np_close)),
-                                    columns=['actual', 'prediction', 'close'])
+        if np_prediction_test is None:
+            df_test_eval = pd.DataFrame(
+                data=np.hstack((np_actual_test, np_close)),
+                columns=['actual', 'close'])
+        else:
+            df_test_eval = pd.DataFrame(
+                data=np.hstack((np_actual_test, np_prediction_test, np_close)),
+                columns=['actual', 'prediction', 'close'])
+
         df_test_eval.reset_index(drop=True, inplace=True)
         return df_test_eval
 
     def create_train_eval_set(self, np_actual_train, np_predictions_train):
         # TRAIN Dataframe for Evaluation
         # Columns: Actual, Prediction, Close Price
-        df_train_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
-                                     columns=['actual', 'prediction'])
+        if np_predictions_train is None:
+            df_train_eval = pd.DataFrame(data=np.hstack(np_actual_train),
+                                         columns=['actual'])
+        else:
+            df_train_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
+                                         columns=['actual', 'prediction'])
+
         # Add close prices
         df_train_eval['close'] = self.data_manager.df['close'][self.n_past:].reset_index(drop=True)
         # Slice DataFrame - Only Train set without validation part
@@ -45,11 +57,16 @@ class ModelEvaluation(ModelBuilder):
         df_train_eval.reset_index(drop=True, inplace=True)
         return df_train_eval
 
-    def create_val_eval_set(self, np_actual_train, np_predictions_train):
+    def create_val_eval_set(self, np_actual_train, np_predictions_train=None):
         # VALIDATION Dataframe for Evaluation
         # Columns: Actual, Prediction, Close Price
-        df_val_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
-                                   columns=['actual', 'prediction'])
+        if np_predictions_train is None:
+            df_val_eval = pd.DataFrame(data=np.hstack(np_actual_train),
+                                       columns=['actual'])
+        else:
+            df_val_eval = pd.DataFrame(data=np.hstack((np_actual_train, np_predictions_train)),
+                                       columns=['actual', 'prediction'])
+
         df_val_eval['close'] = self.data_manager.df['close'][self.n_past:].reset_index(drop=True)
         # Slice DataFrame - Only Validation set without train part
         index_start = round(len(df_val_eval) * (1 - self.val_size))
