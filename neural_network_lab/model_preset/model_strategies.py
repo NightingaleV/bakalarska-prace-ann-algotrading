@@ -257,6 +257,13 @@ class ModelStrategies(ModelEvaluation):
 
     # VISUALIZATION OF RESULTS
     # ------------------------------------------------------------------------------
+    # Return String Results of Strategy
+    @staticmethod
+    def print_strategy_results(strategy_dict):
+        print('Strategy Results:')
+        for key, item in strategy_dict.items():
+            print(str(key) + ': ' + str(item))
+
     # Line Chart - X: Thresholds & Y: Return in Pips
     def plot_threshold_optimization(self, dataset, plot_name: str = 'threshold_optimization',
                                     title: str = 'Threshold Optimization', show=True):
@@ -291,13 +298,13 @@ class ModelStrategies(ModelEvaluation):
         plt.subplot(2, 1, 1)
         plt.plot(dataset['close'])
         plt.title(title)
-        plt.ylabel('Close Price')
-        plt.legend(['close price'], loc='lower right')
+        plt.ylabel('Price')
+        plt.legend(['Close Price'], loc='lower right')
         # Pip Returns
         plt.subplot(2, 1, 2)
         plt.plot(dataset['cum_pip_ret'], color='coral')
-        plt.ylabel('Pip Returns')
-        plt.legend(['returns in pip'], loc='lower right')
+        plt.ylabel('Returns')
+        plt.legend(['Cumulative Returns in Pips'], loc='lower right')
         # Save plot
         plt.savefig(f'{self.models_folder}/{self.model_name}/{plot_name}.png',
                     bbox_inches='tight', dpi=150)
