@@ -37,24 +37,26 @@ logger.set_data_manager(dm)
 # ITERATION PARAMETERS
 # ------------------------------------------------------------------------------
 # Length of predicted Moving Average
-moving_average_periods = [15, 20, 30, 40, 60, 80]
+moving_average_periods = [30, 40]
 # Periods: n_past, n_future
 predictions_periods = [
+    [5, 3],
     [10, 3],
+    [10, 5],
     [15, 5],
     [25, 5],
     [50, 10],
 ]
 # Postfix for multiple iterations of one model setup
-multiple_iterations = ['iter-1', 'iter-2']
+multiple_iterations = ['iter-1', 'iter-2', 'iter-3']
 
 # ITERATOR
 # ------------------------------------------------------------------------------
 # For exporting Results
 models_evaluations = []
-for moving_average, periods, iteration_postfix in itertools.product(moving_average_periods,
-                                                                    predictions_periods,
-                                                                    multiple_iterations):
+for iteration_postfix, moving_average, periods in itertools.product(multiple_iterations,
+                                                                    moving_average_periods,
+                                                                    predictions_periods):
     # SETUP MODEL
     # --------------------------------------------------------------------------
     model = ModelNeuralNetwork(data_manager=dm)
@@ -62,7 +64,6 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     model.n_past: int = periods[0]
     model.n_future: int = periods[1]
     model.model_task: str = 'classification'
-    model.models_folder: str = 'iteration_03'
     model.model_postfix: str = iteration_postfix
     
     logger.set_model(model)
@@ -102,7 +103,7 @@ for moving_average, periods, iteration_postfix in itertools.product(moving_avera
     dm.df[model.model_task] = np.where(dm.df['future_price_regression'] > 1, 1, 0)
 
     # For training without EMAs
-    dm.df.drop(dm.mean_indicators, axis=1, inplace=True)
+    # dm.df.drop(dm.mean_indicators, axis=1, inplace=True)
     # Drop unnecessary values
     dm.df.drop(['low', 'high', 'open'], axis=1, inplace=True)
     dm.df.drop(['%d', 'past_price_regression', 'future_price_regression'], axis=1, inplace=True)
@@ -367,6 +368,6 @@ labels = iteration_variables_labels + model_score_labels + model_prediction_stra
          + model_macd_strategy_labels
 
 df_iterations = pd.DataFrame(data=models_evaluations, columns=labels)
-df_iterations.to_csv(f'{ModelNeuralNetwork.models_folder}/models_evaluations.csv',
+df_iterations.to_csv(f'{ModelNeuralNetwork(dm).models_folder}/models_evaluations.csv',
                      encoding='utf-8', index=False)
 
