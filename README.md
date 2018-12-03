@@ -1,9 +1,12 @@
 # Bakalářská práce - Slavík
 Implementace řešení bakalářské práce "**Algoritmické obchodování na burze s využitím umělých 
-neuronových sítí**". Implementace obsahuje:
+neuronových sítí**". 
+####Implementace:
 - zpracování dat
-- 
-## Obsah Package
+- trénování neuronové sítě
+- evaluace modelu
+- vytvoření a evaluace obchodních strategií
+## Struktura
 ### Interface
 - Jupyter Notebook vysvětlující workflow trénování modelu
 - Iterátor pro hromadné trénování neuronových sítí
@@ -12,6 +15,7 @@ neuronových sítí**". Implementace obsahuje:
 - `dataset_manager.py` - package pro správu a manipulaci s daty
 - `technical_indicators.py` - implementace použitých technických indikátorů
 ### Neural Lab
+- `ann_clasification.py` - soubor pro řízení topologie a parametrů modelu
 - `logger.py` - package pro logování informací o natrénovaných modelech
 - `model_builder.py` - implementace sestavení modelu a jeho trénování
 - `model_evaluation.py` - implementace evaluace vytrénovaného modelu
