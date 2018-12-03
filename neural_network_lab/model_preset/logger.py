@@ -43,6 +43,7 @@ class Logger:
     def log_model_info(self):
         model_info = self.get_report()
         self.logger.info(model_info)
+        print('Model Parameters and Results were saved into log file')
 
     def get_report(self):
         main_content = f"""
