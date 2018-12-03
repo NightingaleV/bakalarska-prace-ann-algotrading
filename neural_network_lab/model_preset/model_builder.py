@@ -16,18 +16,7 @@ from keras.optimizers import Adam
 # from .model_evaluation import ModelEvaluation
 
 
-class ModelMeta(type):
-
-    @property
-    def models_folder(cls):
-        return cls._models_folder
-
-    @models_folder.setter
-    def models_folder(cls, value):
-        cls._models_folder = value
-
-
-class ModelBuilder(metaclass=ModelMeta):
+class ModelBuilder:
     _models_folder = 'trained_models'
 
     def __init__(self):
@@ -76,7 +65,13 @@ class ModelBuilder(metaclass=ModelMeta):
         self.val_score: float = 0.
         self.val_score_max_in_epoch: int = 0
 
+    @property
+    def models_folder(self):
+        return self._models_folder
 
+    @models_folder.setter
+    def models_folder(self, value):
+        self._models_folder = value
 
     @property
     def model_name(self):
