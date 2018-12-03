@@ -13,9 +13,7 @@ neuronových sítí**".
 ## Průvodce implementací
 Pokud Vás zajímá proces implementace, ale nechce se Vám instalovat package lokálně, je zde 
 připraven průvodce v podobě jupyter notebooku mapující workflow a funkcionalitu práce.
-- [PRŮVODCE IMPLEMENTACÍ](https://github
-.com/NightingaleV/bakalarska-prace-ann-algotrading/blob/master/interface
-/Workflow_Guide.ipynb)
+- [**Průvodce implementací - ONLINE**](https://github.com/NightingaleV/bakalarska-prace-ann-algotrading/blob/master/interface/Workflow_Guide.ipynb)
 
 ## Struktura
 ### Interface
